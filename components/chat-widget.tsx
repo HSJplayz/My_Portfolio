@@ -56,7 +56,7 @@ export function ChatWidget() {
             <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-accent/10 via-cream-2 to-accent-2/15 px-4 py-3">
               <div className="flex items-center gap-3">
                 <div className="h-12 w-12 shrink-0">
-                  <ChatBot busy={busy} />
+                  <ChatBot busy={busy} hasInput={input.trim().length > 0} />
                 </div>
                 <div>
                   <p className="font-display text-lg text-ink">

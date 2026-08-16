@@ -40,7 +40,11 @@ export function FocusNotes() {
   return (
     <div className="grid gap-12 md:grid-cols-3 md:gap-8">
       {notes.map((note) => (
-        <div key={note.title} className="group relative z-0 hover:z-10">
+        <div
+          key={note.title}
+          className="group relative z-0 hover:z-10"
+          style={{ "--sa-base": `${note.a}deg`, "--sb-base": `${note.b}deg` } as CSSProperties}
+        >
           <div
             className="note-swing relative h-80 rounded-[3px]"
             style={
@@ -49,8 +53,6 @@ export function FocusNotes() {
                 backgroundImage: `linear-gradient(to right, transparent 34px, rgba(192,84,58,0.3) 34px, rgba(192,84,58,0.3) 35px, transparent 35px), repeating-linear-gradient(to bottom, transparent 0 31px, rgba(150,130,100,0.32) 31px 32px)`,
                 boxShadow:
                   "0 2px 4px rgba(27,23,19,0.12), 0 18px 40px -18px rgba(27,23,19,0.35)",
-                "--swing-a": `${note.a}deg`,
-                "--swing-b": `${note.b}deg`,
                 animationDuration: `${note.duration}s`,
                 animationDelay: `${note.delay}s`,
               } as CSSProperties

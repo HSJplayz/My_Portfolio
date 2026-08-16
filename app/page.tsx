@@ -31,8 +31,9 @@ export default function Home() {
       {/* ── Hero ─────────────────────────────── */}
       <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-accent/15 blur-3xl" />
-          <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-accent-2/15 blur-3xl [animation-delay:-5s]" />
+          <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-accent/20 blur-3xl" />
+          <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-accent-2/20 blur-3xl [animation-delay:-5s]" />
+          <div className="absolute right-[-4%] bottom-16 h-72 w-72 animate-drift rounded-full bg-accent/15 blur-3xl [animation-delay:-11s]" />
           <div className="absolute inset-y-0 right-0 hidden w-[56%] lg:block">
             <div className="absolute inset-0">
               <HeroScene />
@@ -63,7 +64,7 @@ export default function Home() {
             >
               {profile.name.split(" ")[0]}
               <br />
-              <span className="italic text-accent">
+              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
                 {profile.name.split(" ").slice(1).join(" ")}
               </span>
             </motion.h1>
@@ -87,14 +88,14 @@ export default function Home() {
             >
               <Link
                 href="/projects"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-7 text-sm text-paper transition-colors hover:bg-accent"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-accent to-accent-2 px-7 text-sm font-medium text-paper shadow-lg shadow-accent/30 transition-all hover:from-accent-2 hover:to-accent hover:shadow-accent/40"
               >
                 View my work
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex h-12 items-center rounded-full border border-ink/20 px-7 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex h-12 items-center rounded-full border border-accent/30 px-7 text-sm font-medium text-ink transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent"
               >
                 Contact me
               </Link>
@@ -187,7 +188,9 @@ export default function Home() {
             <p className="mb-3 font-mono text-sm text-accent">( About )</p>
             <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
               Engineer. Builder.{" "}
-              <span className="italic text-accent">Roboticist.</span>
+              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
+                Roboticist.
+              </span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
@@ -207,15 +210,18 @@ export default function Home() {
       {/* ── Contact CTA ────────────────────────── */}
       <section className="relative overflow-hidden border-t border-line">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-accent/15 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-accent-2/15 blur-3xl [animation-delay:-8s]" />
+            <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-accent/20 blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-accent-2/20 blur-3xl [animation-delay:-8s]" />
+            <div className="absolute right-0 top-1/2 h-64 w-64 animate-drift rounded-full bg-accent/10 blur-3xl [animation-delay:-13s]" />
         </div>
         <div className="relative mx-auto max-w-5xl px-5 py-28 text-center">
           <Reveal>
             <p className="mb-4 font-mono text-sm text-accent">( Contact )</p>
             <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
               Have an idea?{" "}
-              <span className="italic text-accent">Let&apos;s build it.</span>
+              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
+                Let&apos;s build it.
+              </span>
             </h2>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted">
               Open to internships, robotics & vision work, and full-stack
@@ -224,14 +230,14 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/contact"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-8 text-sm text-paper transition-colors hover:bg-accent"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-accent to-accent-2 px-8 text-sm font-medium text-paper shadow-lg shadow-accent/30 transition-all hover:from-accent-2 hover:to-accent hover:shadow-accent/40"
               >
                 Get in touch
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
               <a
                 href={`mailto:${profile.email}`}
-                className="inline-flex h-12 items-center rounded-full border border-ink/20 px-8 text-sm text-ink transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex h-12 items-center rounded-full border border-accent/30 px-8 text-sm font-medium text-ink transition-colors hover:border-accent hover:bg-accent/10 hover:text-accent"
               >
                 {profile.email}
               </a>

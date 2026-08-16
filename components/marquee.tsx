@@ -6,10 +6,10 @@ export function Marquee({ items }: { items: string[] }) {
         {doubled.map((item, i) => (
           <span
             key={i}
-            className="inline-flex items-center gap-3 rounded-full border border-line bg-paper px-4 py-1.5 font-display text-sm italic tracking-wide text-ink-2"
+            className="inline-flex items-center gap-3 rounded-full border border-accent/15 bg-paper px-4 py-1.5 font-display text-sm italic tracking-wide text-ink-2 shadow-sm"
           >
             {item}
-            <span className="not-italic text-accent">✦</span>
+            <span className="not-italic text-accent-2">✦</span>
           </span>
         ))}
       </div>

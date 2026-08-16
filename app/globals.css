@@ -75,23 +75,25 @@
   }
 }
 
+@property --swing-a {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: -2deg;
+}
+
+@property --swing-b {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 2deg;
+}
+
 @keyframes swing {
   0%,
   100% {
-    transform: rotate(var(--swing-a, -2deg));
+    transform: rotate(var(--swing-a));
   }
   50% {
-    transform: rotate(var(--swing-b, 2deg));
-  }
-}
-
-@keyframes swing-hover {
-  0%,
-  100% {
-    transform: rotate(calc(var(--swing-a, -2deg) * 2.4));
-  }
-  50% {
-    transform: rotate(calc(var(--swing-b, 2deg) * 2.4));
+    transform: rotate(var(--swing-b));
   }
 }
 
@@ -130,15 +132,19 @@ html {
 
 .note-swing {
   transform-origin: top center;
+  --swing-a: var(--sa-base, -2deg);
+  --swing-b: var(--sb-base, 2deg);
+  transition:
+    --swing-a 0.5s ease,
+    --swing-b 0.5s ease;
   animation-name: swing;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
 
 .group:hover .note-swing {
-  animation-name: swing-hover;
-  animation-duration: 0.8s;
-  animation-iteration-count: infinite;
+  --swing-a: calc(var(--sa-base, -2deg) * 2.4);
+  --swing-b: calc(var(--sb-base, 2deg) * 2.4);
 }
 
 @media (prefers-reduced-motion: reduce) {
