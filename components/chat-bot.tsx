@@ -8,7 +8,9 @@ import * as THREE from "three";
 const damp = (a: number, b: number, k: number, dt: number) =>
   THREE.MathUtils.lerp(a, b, 1 - Math.pow(1 - k, dt * 60));
 
-function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
+export type BotMode = "idle" | "typing" | "thinking" | "speaking";
+
+function Robot({ mode }: { mode: BotMode }) {
   const head = useRef<THREE.Group>(null);
   const bodySway = useRef<THREE.Group>(null);
   const leftArm = useRef<THREE.Group>(null);
@@ -21,6 +23,7 @@ function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
   const mouth = useRef<THREE.Mesh>(null);
   const chestMat = useRef<THREE.MeshStandardMaterial>(null);
   const antennaMat = useRef<THREE.MeshStandardMaterial>(null);
+  const dots = [useRef<THREE.Mesh>(null), useRef<THREE.Mesh>(null), useRef<THREE.Mesh>(null)];
   const lastT = useRef(0);
 
   useFrame(({ clock }) => {
@@ -28,54 +31,107 @@ function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
     const dt = Math.min(Math.max(t - lastT.current, 0.016), 0.1);
     lastT.current = t;
 
-    // targets per state
-    const mode = busy ? "busy" : hasInput ? "typing" : "idle";
-    const headX = mode === "typing" ? 0.22 : mode === "busy" ? -0.1 : 0.03;
-    const headY = Math.sin(t * 0.7) * (mode === "busy" ? 0.1 : 0.3);
-    const headZ = Math.sin(t * 0.6) * 0.05;
-    const pupilY = mode === "typing" ? -0.012 : mode === "busy" ? 0.006 : 0;
-    const pupilX = busy ? Math.sin(t * 2.2) * 0.012 : Math.sin(t * 0.45) * 0.016;
-    const armBusy = mode === "busy" ? 1 : 0;
-    const browFurrow = mode === "busy" ? 1 : 0;
+    const thinking = mode === "thinking";
+    const speaking = mode === "speaking";
+    const typing = mode === "typing";
 
-    // blink: quick closure every ~3s (faster while busy)
-    const blinkPeriod = busy ? 1.3 : 3.1;
-    const blinkPhase = t % blinkPeriod;
-    const blink = blinkPhase < 0.16 ? 0.08 : 1;
+    // look targets per mode
+    const headYTarget = typing ? -0.32 : thinking ? 0.3 : speaking ? Math.sin(t * 1.1) * 0.15 : Math.sin(t * 0.7) * 0.25;
+    const headXTarget = typing ? -0.18 : thinking ? 0.22 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.03 : 0.03 + Math.sin(t * 0.5) * 0.02;
+    const headZTarget = typing ? 0.06 : thinking ? 0.08 : speaking ? Math.sin(t * 1.6) * 0.03 : Math.sin(t * 0.6) * 0.05;
+
+    const pupilXTarget = typing ? -0.018 : thinking ? 0.016 : speaking ? Math.sin(t * 2.6) * 0.012 : Math.sin(t * 0.45) * 0.016;
+    const pupilYTarget = typing ? -0.014 : thinking ? 0.013 : 0;
+
+    // brows
+    const browLTarget = typing ? 0.14 : thinking ? -0.26 : 0;
+    const browRTarget = typing ? 0.14 : thinking ? 0.26 : 0;
+
+    // mouth: idle smile / typing neutral / thinking hmm / speaking talk
+    const mouthScale = speaking
+      ? 0.55 + 0.45 * Math.abs(Math.sin(t * 8))
+      : thinking
+        ? 0.38
+        : typing
+          ? 0.52
+          : 0.6 + 0.04 * Math.sin(t * 1.2);
+
+    // arms
+    const armLTarget = thinking
+      ? -1.35 + Math.sin(t * 0.9) * 0.04
+      : speaking
+        ? -0.55 + Math.sin(t * 3) * 0.35
+        : typing
+          ? -0.3 + Math.sin(t * 1.3) * 0.05
+          : -0.05 + Math.sin(t * 1.1) * 0.09;
+    const armRTarget = thinking
+      ? 0.1 + Math.sin(t * 0.7) * 0.06
+      : speaking
+        ? -0.55 + Math.sin(t * 3 + 1.2) * 0.35
+        : typing
+          ? -0.3 + Math.sin(t * 1.3 + 1.1) * 0.05
+          : -0.05 + Math.sin(t * 1.1 + 1.4) * 0.09;
+
+    const swayTarget = thinking
+      ? Math.sin(t * 0.7) * 0.04
+      : speaking
+        ? Math.sin(t * 2.4) * 0.03
+        : Math.sin(t * (typing ? 1.4 : 0.9)) * 0.03;
+
+    // blink
+    const blinkPeriod = speaking ? 1.8 : typing ? 2.6 : thinking ? 4.5 : 3.1;
+    const blink = t % blinkPeriod < 0.16 ? 0.08 : 1;
+
+    // glow pulse
+    const chest = speaking
+      ? 1.7 + 0.7 * Math.sin(t * 8)
+      : thinking
+        ? 1.0 + 0.2 * Math.sin(t * 1.2)
+        : typing
+          ? 1.1 + 0.3 * Math.sin(t * 2.6)
+          : 0.9 + 0.25 * Math.sin(t * 2);
+    const antenna = speaking
+      ? 2.8 + 0.9 * Math.sin(t * 9)
+      : thinking
+        ? 2.2 + 0.4 * Math.sin(t * 1.4)
+        : typing
+          ? 1.8 + 0.5 * Math.sin(t * 2.6)
+          : 1.6 + 0.4 * Math.sin(t * 2.2);
 
     if (head.current) {
-      head.current.rotation.x = damp(head.current.rotation.x, headX, 0.08, dt) + (mode === "busy" ? Math.sin(t * 5) * 0.05 : 0);
-      head.current.rotation.y = damp(head.current.rotation.y, headY, 0.08, dt);
-      head.current.rotation.z = damp(head.current.rotation.z, headZ, 0.08, dt);
+      head.current.rotation.x = damp(head.current.rotation.x, headXTarget, 0.08, dt);
+      head.current.rotation.y = damp(head.current.rotation.y, headYTarget, 0.08, dt);
+      head.current.rotation.z = damp(head.current.rotation.z, headZTarget, 0.08, dt);
     }
-    if (bodySway.current) {
-      bodySway.current.rotation.z = damp(bodySway.current.rotation.z, busy ? Math.sin(t * 4) * 0.05 : Math.sin(t * 0.9) * 0.03, 0.06, dt);
-    }
-    if (leftArm.current)
-      leftArm.current.rotation.x = damp(leftArm.current.rotation.x, -0.05 - armBusy * 1.2, 0.08, dt) + Math.sin(t * (busy ? 6 : 1.1)) * (busy ? 0.14 : 0.09);
-    if (rightArm.current)
-      rightArm.current.rotation.x = damp(rightArm.current.rotation.x, -0.05 + armBusy * 0.4, 0.08, dt) + Math.sin(t * (busy ? 6 : 1.1) + 1.4) * (busy ? 0.12 : 0.09);
+    if (bodySway.current) bodySway.current.rotation.z = damp(bodySway.current.rotation.z, swayTarget, 0.06, dt);
+    if (leftArm.current) leftArm.current.rotation.x = damp(leftArm.current.rotation.x, armLTarget, 0.1, dt);
+    if (rightArm.current) rightArm.current.rotation.x = damp(rightArm.current.rotation.x, armRTarget, 0.1, dt);
     if (leftPupil.current) {
-      leftPupil.current.position.x = pupilX;
-      leftPupil.current.position.y = pupilY;
+      leftPupil.current.position.x = pupilXTarget;
+      leftPupil.current.position.y = pupilYTarget;
     }
     if (rightPupil.current) {
-      rightPupil.current.position.x = pupilX;
-      rightPupil.current.position.y = pupilY;
+      rightPupil.current.position.x = pupilXTarget;
+      rightPupil.current.position.y = pupilYTarget;
     }
     if (eyes.current) eyes.current.scale.y = damp(eyes.current.scale.y, blink, 0.5, dt);
-    if (leftBrow.current) leftBrow.current.rotation.z = damp(leftBrow.current.rotation.z, 0.24 * browFurrow, 0.1, dt);
-    if (rightBrow.current) rightBrow.current.rotation.z = damp(rightBrow.current.rotation.z, -0.24 * browFurrow, 0.1, dt);
-    if (mouth.current) mouth.current.scale.x = damp(mouth.current.scale.x, busy ? 0.55 + 0.45 * Math.abs(Math.sin(t * 7)) : 0.6, 0.12, dt);
-    if (chestMat.current)
-      chestMat.current.emissiveIntensity = busy ? 1.8 + 0.8 * Math.sin(t * 8) : 0.9 + 0.25 * Math.sin(t * 2);
-    if (antennaMat.current)
-      antennaMat.current.emissiveIntensity = busy ? 3 + Math.sin(t * 10) : 1.6 + 0.4 * Math.sin(t * 2.2);
+    if (leftBrow.current) leftBrow.current.rotation.z = damp(leftBrow.current.rotation.z, browLTarget, 0.12, dt);
+    if (rightBrow.current) rightBrow.current.rotation.z = damp(rightBrow.current.rotation.z, browRTarget, 0.12, dt);
+    if (mouth.current) mouth.current.scale.x = damp(mouth.current.scale.x, mouthScale, 0.15, dt);
+    if (chestMat.current) chestMat.current.emissiveIntensity = chest;
+    if (antennaMat.current) antennaMat.current.emissiveIntensity = antenna;
+
+    // thinking bubble dots
+    dots.forEach((d, i) => {
+      if (!d.current) return;
+      const s = thinking ? 0.55 + 0.45 * Math.sin(t * 5 - i * 0.9) : 0;
+      d.current.scale.setScalar(damp(d.current.scale.x, s, 0.3, dt));
+    });
   });
 
   return (
     <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
-      <group ref={bodySway}>
+      <group ref={bodySway} scale={1.3}>
         {/* antenna */}
         <mesh position={[0, 0.52, 0]}>
           <cylinderGeometry args={[0.012, 0.012, 0.16, 8]} />
@@ -85,6 +141,16 @@ function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
           <sphereGeometry args={[0.028, 12, 12]} />
           <meshStandardMaterial ref={antennaMat} color="#ff9a5c" emissive="#ff9a5c" emissiveIntensity={1.6} />
         </mesh>
+
+        {/* thinking dots */}
+        <group position={[0, 0.78, 0]}>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} ref={dots[i]} position={[(i - 1) * 0.075, 0, 0]}>
+              <sphereGeometry args={[0.028, 10, 10]} />
+              <meshBasicMaterial color="#d97951" />
+            </mesh>
+          ))}
+        </group>
 
         {/* head */}
         <group ref={head}>
@@ -176,7 +242,7 @@ function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
   );
 }
 
-export function ChatBot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
+export function ChatBot({ mode }: { mode: BotMode }) {
   return (
     <Canvas
       dpr={[1, 2]}
@@ -189,7 +255,7 @@ export function ChatBot({ busy, hasInput }: { busy: boolean; hasInput: boolean }
       <directionalLight position={[2, 3, 3]} intensity={1.6} color="#ffe8d0" />
       <directionalLight position={[-2, -1, 2]} intensity={0.5} color="#d97951" />
       <Suspense fallback={null}>
-        <Robot busy={busy} hasInput={hasInput} />
+        <Robot mode={mode} />
       </Suspense>
     </Canvas>
   );

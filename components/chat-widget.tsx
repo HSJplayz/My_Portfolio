@@ -41,6 +41,14 @@ export function ChatWidget() {
 
   const allMessages = [GREETING, ...messages];
   const busy = status === "submitted" || status === "streaming";
+  const mode: "idle" | "typing" | "thinking" | "speaking" =
+    status === "submitted"
+      ? "thinking"
+      : status === "streaming"
+        ? "speaking"
+        : input.trim()
+          ? "typing"
+          : "idle";
 
   return (
     <>
@@ -55,8 +63,8 @@ export function ChatWidget() {
           >
             <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-accent/10 via-cream-2 to-accent-2/15 px-4 py-3">
               <div className="flex items-center gap-3">
-                <div className="h-12 w-12 shrink-0">
-                  <ChatBot busy={busy} hasInput={input.trim().length > 0} />
+                <div className="h-16 w-16 shrink-0">
+                  <ChatBot mode={mode} />
                 </div>
                 <div>
                   <p className="font-display text-lg text-ink">

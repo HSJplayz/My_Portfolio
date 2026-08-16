@@ -54,7 +54,10 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
             ))}
           </div>
 
-          <span className="mt-6 inline-flex items-center gap-1.5 text-sm text-accent">
+          <span
+            className="mt-6 inline-flex items-center gap-1.5 text-sm transition-opacity group-hover:opacity-80"
+            style={{ color: project.accent }}
+          >
             View project
             <svg
               width="14"

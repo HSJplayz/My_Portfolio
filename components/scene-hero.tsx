@@ -5,7 +5,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, Float, Sparkles, useGLTF } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, type ReactNode } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import { asset } from "@/lib/asset";
 
@@ -175,6 +175,8 @@ function drawCode(
 
 function useCodeScreen() {
   const state = useRef({ tab: 0, chars: 0, cursor: true, startAt: 0, holdUntil: Infinity });
+  const clockRef = useRef<THREE.Clock | null>(null);
+  const lastSig = useRef("");
 
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -196,6 +198,7 @@ function useCodeScreen() {
   }, [texture]);
 
   useFrame(({ clock }) => {
+    clockRef.current = clock;
     const tex = textureRef.current;
     if (!tex) return;
     const s = state.current;
@@ -215,13 +218,24 @@ function useCodeScreen() {
       }
     }
     s.cursor = Math.floor(t * 1.6) % 2 === 0;
+    const sig = `${s.tab}|${Math.floor(s.chars)}|${s.cursor}`;
+    if (sig === lastSig.current) return;
+    lastSig.current = sig;
     const ctx = (tex.image as HTMLCanvasElement).getContext("2d");
     if (ctx) drawCode(ctx, s.tab, Math.floor(s.chars), s.cursor);
     tex.needsUpdate = true;
   });
 
-  return texture;
+  const reset = useCallback(() => {
+    const t = clockRef.current?.getElapsedTime() ?? 0;
+    state.current = { tab: 0, chars: 0, cursor: true, startAt: t, holdUntil: Infinity };
+    lastSig.current = "";
+  }, []);
+
+  return { texture, reset };
 }
+
+type Anim = { lid: number; y: number; rise: number; code: number; glow: number; flash: number };
 
 function Laptop() {
   const group = useRef<THREE.Group>(null);
@@ -231,6 +245,7 @@ function Laptop() {
   const codeMat = useRef<THREE.MeshBasicMaterial>(null);
   const flashMat = useRef<THREE.MeshBasicMaterial>(null);
   const glowRef = useRef<THREE.PointLight>(null);
+  const [hovered, setHovered] = useState(false);
 
   const { scene } = useGLTF(asset("/models/laptop.glb"));
 
@@ -257,6 +272,7 @@ function Laptop() {
     () => new THREE.Vector3(0, 1, 0).applyQuaternion(screenQuat),
     [screenQuat]
   );
+  const screenCenter = useMemo(() => new THREE.Vector3(...SCREEN_CENTER), []);
 
   const panelGeom = useMemo(() => {
     const g = new THREE.PlaneGeometry(PANEL_W, PANEL_H);
@@ -273,72 +289,153 @@ function Laptop() {
     g.translate(0, PANEL_H * 1.06 / 2, 0);
     return g;
   }, []);
-
-  const screenCenter = useMemo(
-    () => new THREE.Vector3(...SCREEN_CENTER),
-    []
-  );
-
-  const codeTexture = useCodeScreen();
-
-  useEffect(() => {
-    const g = group.current;
-    if (!g) return;
-    const start = performance.now();
-    let raf = 0;
-    const step = (now: number) => {
-      const t = (now - start) / 1000;
-      const openT = THREE.MathUtils.clamp((t - 0.3) / 1.5, 0, 1);
-      const eased = 1 - Math.pow(1 - openT, 3);
-      g.rotation.x = THREE.MathUtils.lerp(1.2, 0.06, eased);
-      g.position.y = THREE.MathUtils.lerp(-0.55, 0, eased);
-      const rise = THREE.MathUtils.clamp((openT - 0.35) / 0.5, 0, 1);
-      const riseEased = 1 - Math.pow(1 - rise, 2);
-      if (panelRef.current) panelRef.current.scale.y = THREE.MathUtils.lerp(0.03, 1, riseEased);
-      if (codeRef.current) codeRef.current.scale.y = THREE.MathUtils.lerp(0.03, 1, riseEased);
-      const on = THREE.MathUtils.clamp((openT - 0.55) / 0.3, 0, 1);
-      const flash = Math.sin(on * Math.PI);
-      if (flashRef.current && flashMat.current)
-        flashMat.current.opacity = flash * 0.7;
-      if (glowRef.current) glowRef.current.intensity = 0.55 + flash * 1.3;
-      if (codeMat.current)
-        codeMat.current.opacity = Math.min(1, THREE.MathUtils.clamp((openT - 0.6) / 0.4, 0, 1) + flash * 0.2);
-      if (openT >= 1) return;
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
+  const hitGeom = useMemo(() => {
+    const g = new THREE.PlaneGeometry(PANEL_W * 1.1, PANEL_H * 1.18);
+    g.translate(0, PANEL_H * 1.18 / 2, 0);
+    return g;
   }, []);
 
-  useEffect(() => () => {
-    panelGeom.dispose();
-    codeGeom.dispose();
-    flashGeom.dispose();
-  }, [panelGeom, codeGeom, flashGeom]);
+  const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
+
+  const anim = useRef<Anim>({ lid: 1.2, y: -0.55, rise: 0.03, code: 0, glow: 0, flash: 0 });
+  const powered = useRef(true);
+  const transitioning = useRef(false);
+  const tweenId = useRef(0);
+
+  const apply = useCallback(() => {
+    const a = anim.current;
+    if (group.current) {
+      group.current.rotation.x = a.lid;
+      group.current.position.y = a.y;
+    }
+    if (panelRef.current) panelRef.current.scale.y = a.rise;
+    if (codeRef.current) codeRef.current.scale.y = a.rise;
+    if (codeMat.current) codeMat.current.opacity = a.code;
+    if (glowRef.current) glowRef.current.intensity = a.glow;
+    if (flashMat.current) flashMat.current.opacity = a.flash;
+  }, []);
+
+  const tweenTo = useCallback(
+    (to: Partial<Anim>, dur: number, onDone?: () => void) => {
+      const id = ++tweenId.current;
+      const from: Partial<Anim> = {};
+      for (const k of Object.keys(to) as (keyof Anim)[]) from[k] = anim.current[k];
+      const start = performance.now();
+      const step = (now: number) => {
+        if (id !== tweenId.current) return;
+        const t = Math.min((now - start) / (dur * 1000), 1);
+        const e = 1 - Math.pow(1 - t, 3);
+        for (const k of Object.keys(to) as (keyof Anim)[]) {
+          anim.current[k] = THREE.MathUtils.lerp(from[k] as number, to[k] as number, e);
+        }
+        apply();
+        if (t < 1) requestAnimationFrame(step);
+        else if (onDone) onDone();
+      };
+      requestAnimationFrame(step);
+    },
+    [apply]
+  );
+
+  const flashBurst = useCallback(
+    (dur = 0.35, peak = 0.75) => {
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min((now - start) / (dur * 1000), 1);
+        anim.current.flash = Math.sin(t * Math.PI) * peak;
+        apply();
+        if (t < 1) requestAnimationFrame(step);
+        else anim.current.flash = 0;
+      };
+      requestAnimationFrame(step);
+    },
+    [apply]
+  );
+
+  const powerOff = useCallback(() => {
+    if (transitioning.current) return;
+    transitioning.current = true;
+    flashBurst(0.3, 0.85);
+    tweenTo({ code: 0, glow: 0 }, 0.4, () => {
+      tweenTo({ lid: 1.2, y: -0.55, rise: 0.03 }, 1.15, () => {
+        transitioning.current = false;
+        powered.current = false;
+      });
+    });
+  }, [flashBurst, tweenTo]);
+
+  const powerOn = useCallback(() => {
+    if (transitioning.current) return;
+    transitioning.current = true;
+    resetTyping();
+    tweenTo({ lid: 0.06, y: 0, rise: 1 }, 1.1, () => {
+      flashBurst(0.3, 0.7);
+      tweenTo({ code: 1, glow: 0.55 }, 0.45, () => {
+        transitioning.current = false;
+        powered.current = true;
+      });
+    });
+  }, [flashBurst, resetTyping, tweenTo]);
+
+  const togglePower = useCallback(() => {
+    if (transitioning.current) return;
+    if (powered.current) powerOff();
+    else powerOn();
+  }, [powerOff, powerOn]);
+
+  useEffect(() => {
+    const startedAt = tweenId.current;
+    tweenTo({ lid: 0.06, y: 0, rise: 1 }, 1.5, () => {
+      flashBurst(0.3, 0.7);
+      tweenTo({ code: 1, glow: 0.55 }, 0.5);
+    });
+    return () => {
+      tweenId.current = startedAt + 1;
+    };
+  }, [flashBurst, tweenTo]);
+
+  useEffect(() => {
+    document.body.style.cursor = hovered ? "pointer" : "auto";
+    return () => {
+      document.body.style.cursor = "auto";
+    };
+  }, [hovered]);
+
+  useEffect(
+    () => () => {
+      panelGeom.dispose();
+      codeGeom.dispose();
+      flashGeom.dispose();
+      hitGeom.dispose();
+    },
+    [panelGeom, codeGeom, flashGeom, hitGeom]
+  );
+
+  const panelPos = useMemo(
+    () => screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2),
+    [screenCenter, screenUp]
+  );
+  const codePos = useMemo(
+    () => screenCenter.clone().addScaledVector(screenUp, -CODE_H / 2),
+    [screenCenter, screenUp]
+  );
+  const normal = useMemo(() => new THREE.Vector3(...SCREEN_NORMAL).normalize(), []);
 
   return (
     <group rotation={[0.04, -0.85, 0]} position={[0.6, -0.15, 0]}>
       <group ref={group} rotation={[1.2, 0, 0]}>
         <primitive object={model} />
-        <mesh ref={panelRef} position={screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2)} quaternion={screenQuat} scale={[1, 0.03, 1]}>
+        <mesh ref={panelRef} position={panelPos.clone()} quaternion={screenQuat} scale={[1, 0.03, 1]}>
           <primitive object={panelGeom} attach="geometry" />
           <meshStandardMaterial color="#0d0b09" metalness={0.6} roughness={0.3} />
         </mesh>
-        <mesh
-          ref={codeRef}
-          position={screenCenter.clone().addScaledVector(screenUp, -CODE_H / 2)}
-          quaternion={screenQuat}
-          scale={[1, 0.03, 1]}
-        >
+        <mesh ref={codeRef} position={codePos.clone()} quaternion={screenQuat} scale={[1, 0.03, 1]}>
           <primitive object={codeGeom} attach="geometry" />
           <meshBasicMaterial ref={codeMat} map={codeTexture} toneMapped={false} transparent opacity={0} />
         </mesh>
         <mesh
           ref={flashRef}
-          position={screenCenter
-            .clone()
-            .addScaledVector(screenUp, -PANEL_H / 2)
-            .addScaledVector(new THREE.Vector3(...SCREEN_NORMAL), 0.03)}
+          position={panelPos.clone().addScaledVector(normal, 0.03)}
           quaternion={screenQuat}
           scale={[1, 0.03, 1]}
         >
@@ -352,6 +449,20 @@ function Laptop() {
             depthWrite={false}
             blending={THREE.AdditiveBlending}
           />
+        </mesh>
+        <mesh
+          position={panelPos.clone().addScaledVector(normal, 0.05)}
+          quaternion={screenQuat}
+          scale={[1, 0.03, 1]}
+          onClick={(e) => {
+            e.stopPropagation();
+            togglePower();
+          }}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          <primitive object={hitGeom} attach="geometry" />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
         <pointLight
           ref={glowRef}
@@ -371,8 +482,7 @@ export default function HeroScene() {
       dpr={[1, 1.75]}
       camera={{ position: [0, 0, 7], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
-      style={{ pointerEvents: "none" }}
-      aria-hidden
+      style={{ pointerEvents: "auto" }}
     >
       <ambientLight intensity={0.75} />
       <directionalLight position={[4, 6, 4]} intensity={1.5} color="#ffe2c0" />

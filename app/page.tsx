@@ -31,9 +31,9 @@ export default function Home() {
       {/* ── Hero ─────────────────────────────── */}
       <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-accent/20 blur-3xl" />
-          <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-accent-2/20 blur-3xl [animation-delay:-5s]" />
-          <div className="absolute right-[-4%] bottom-16 h-72 w-72 animate-drift rounded-full bg-accent/15 blur-3xl [animation-delay:-11s]" />
+          <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-coral/25 blur-3xl" />
+          <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-violet/25 blur-3xl [animation-delay:-5s]" />
+          <div className="absolute right-[-4%] bottom-16 h-72 w-72 animate-drift rounded-full bg-teal/20 blur-3xl [animation-delay:-11s]" />
           <div className="absolute inset-y-0 right-0 hidden w-[56%] lg:block">
             <div className="absolute inset-0">
               <HeroScene />
@@ -64,7 +64,7 @@ export default function Home() {
             >
               {profile.name.split(" ")[0]}
               <br />
-              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
                 {profile.name.split(" ").slice(1).join(" ")}
               </span>
             </motion.h1>
@@ -135,7 +135,7 @@ export default function Home() {
         <Reveal>
           <div className="mb-12 flex items-end justify-between">
             <div>
-              <p className="mb-3 font-mono text-sm text-accent">( Selected Work )</p>
+              <p className="mb-3 font-mono text-sm text-coral">( Selected Work )</p>
               <h2 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
                 <SplitText text="Featured projects" />
               </h2>
@@ -171,7 +171,7 @@ export default function Home() {
       <section className="border-t border-line bg-cream-2/50">
         <div className="mx-auto w-full max-w-5xl px-5 py-24">
           <Reveal>
-            <p className="mb-3 font-mono text-sm text-accent">( Focus )</p>
+            <p className="mb-3 font-mono text-sm text-violet">( Focus )</p>
             <h2 className="mb-12 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
               What I do
             </h2>
@@ -185,10 +185,10 @@ export default function Home() {
       <section className="mx-auto w-full max-w-5xl px-5 py-24">
         <div className="grid gap-10 sm:grid-cols-[1fr_1.4fr]">
           <Reveal>
-            <p className="mb-3 font-mono text-sm text-accent">( About )</p>
+            <p className="mb-3 font-mono text-sm text-teal">( About )</p>
             <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
               Engineer. Builder.{" "}
-              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-teal via-lavender to-violet bg-clip-text italic text-transparent">
                 Roboticist.
               </span>
             </h2>
@@ -210,16 +210,16 @@ export default function Home() {
       {/* ── Contact CTA ────────────────────────── */}
       <section className="relative overflow-hidden border-t border-line">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-accent/20 blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-accent-2/20 blur-3xl [animation-delay:-8s]" />
-            <div className="absolute right-0 top-1/2 h-64 w-64 animate-drift rounded-full bg-accent/10 blur-3xl [animation-delay:-13s]" />
+            <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-violet/25 blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-teal/25 blur-3xl [animation-delay:-8s]" />
+            <div className="absolute right-0 top-1/2 h-64 w-64 animate-drift rounded-full bg-rose/15 blur-3xl [animation-delay:-13s]" />
         </div>
         <div className="relative mx-auto max-w-5xl px-5 py-28 text-center">
           <Reveal>
-            <p className="mb-4 font-mono text-sm text-accent">( Contact )</p>
+            <p className="mb-4 font-mono text-sm text-rose">( Contact )</p>
             <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
               Have an idea?{" "}
-              <span className="bg-gradient-to-r from-accent via-accent-2 to-accent bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
                 Let&apos;s build it.
               </span>
             </h2>

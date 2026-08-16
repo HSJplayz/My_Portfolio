@@ -9,6 +9,14 @@
   --color-muted: #72695c;
   --color-accent: #b8561f;
   --color-accent-2: #e08a3c;
+  --color-coral: #e0653f;
+  --color-teal: #0f766e;
+  --color-mint: #14b8a6;
+  --color-violet: #6d5bd0;
+  --color-lavender: #8f7ae5;
+  --color-sky: #3b82f6;
+  --color-rose: #d94f8a;
+  --color-gold: #c9a227;
   --color-line: #e3d9c6;
   --font-sans: var(--font-inter);
   --font-display: var(--font-fraunces);
