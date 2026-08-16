@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { ChatWidget } from "@/components/chat-widget";
@@ -7,8 +7,8 @@ import { ScrollProgress } from "@/components/scroll-progress";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const playfair = Playfair_Display({
+  variable: "--font-display",
   subsets: ["latin"],
   style: ["normal", "italic"],
 });
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
+      className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="grain flex min-h-full flex-col bg-cream font-sans text-ink">
         <Nav />
