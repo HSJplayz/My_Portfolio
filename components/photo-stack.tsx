@@ -44,9 +44,7 @@ export function PhotoStack() {
                 type="button"
                 onClick={() => bringToFront(originalIdx)}
                 aria-label={`Bring photo ${originalIdx + 1} to front`}
-                initial={{ opacity: 0, y: 40, scale: 0.85, rotate: 0 }}
                 animate={{
-                  opacity: 1,
                   rotate: depth * FAN * (p % 2 === 0 ? -1 : 1),
                   x: depth * 10,
                   y: -depth * 4,

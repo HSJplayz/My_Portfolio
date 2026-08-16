@@ -1,13 +1,8 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  ContactShadows,
-  Float,
-  MeshDistortMaterial,
-  Sparkles,
-} from "@react-three/drei";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ContactShadows, Float, RoundedBox, Sparkles } from "@react-three/drei";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 
 let targetX = 0;
@@ -44,11 +39,127 @@ function Rig({ children }: { children: ReactNode }) {
 
   useFrame(() => {
     if (!ref.current) return;
-    ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, targetX * 0.5, 0.05);
-    ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, targetY * 0.3, 0.05);
+    ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, targetX * 0.35, 0.05);
+    ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, targetY * 0.2, 0.05);
   });
 
   return <group ref={ref}>{children}</group>;
+}
+
+function buildCodeTexture() {
+  const w = 1024;
+  const h = 640;
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  const font = "20px Consolas, Menlo, monospace";
+
+  ctx.fillStyle = "#161310";
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.fillStyle = "#a94a2c";
+  ctx.beginPath();
+  ctx.arc(42, 42, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#d97951";
+  ctx.beginPath();
+  ctx.arc(76, 42, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#72695c";
+  ctx.beginPath();
+  ctx.arc(110, 42, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#57504a";
+  ctx.font = font;
+  ctx.fillText("vision-bot.ts", 140, 51);
+
+  const lines: { num: number; indent: number; color: string; text: string }[] = [
+    { num: 1, indent: 0, color: "#8b9bb4", text: 'import { VisionBot } from "./bot";' },
+    { num: 2, indent: 0, color: "#161310", text: "" },
+    { num: 3, indent: 0, color: "#d8cfc0", text: "const bot = new VisionBot({" },
+    { num: 4, indent: 1, color: "#e2a76f", text: 'model: "yolov8",' },
+    { num: 5, indent: 1, color: "#d8cfc0", text: "fps: 30," },
+    { num: 6, indent: 0, color: "#d8cfc0", text: "});" },
+    { num: 7, indent: 0, color: "#161310", text: "" },
+    { num: 8, indent: 0, color: "#d8cfc0", text: 'bot.on("detect", async (frame) => {' },
+    { num: 9, indent: 1, color: "#a1d0a1", text: "const target = await bot.locate(frame);" },
+    { num: 10, indent: 1, color: "#d8cfc0", text: "await arm.moveTo(target);" },
+    { num: 11, indent: 0, color: "#d8cfc0", text: "});" },
+    { num: 12, indent: 0, color: "#161310", text: "" },
+    { num: 13, indent: 0, color: "#6d6459", text: "// deploying to the edge…" },
+    { num: 14, indent: 0, color: "#d97951", text: "bot.deploy();" },
+  ];
+
+  const startY = 128;
+  const lineH = 44;
+  lines.forEach((line, i) => {
+    ctx.fillStyle = "#4c463f";
+    ctx.font = font;
+    ctx.fillText(String(line.num), 22, startY + i * lineH);
+    if (line.text) {
+      ctx.fillStyle = line.color;
+      ctx.fillText(line.text, 62 + line.indent * 32, startY + i * lineH);
+    }
+  });
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+  return texture;
+}
+
+function Laptop() {
+  const codeTexture = useMemo(() => buildCodeTexture(), []);
+
+  useEffect(() => () => codeTexture.dispose(), [codeTexture]);
+
+  return (
+    <group rotation={[0.06, -0.55, 0]} position={[0, 0.1, 0]}>
+      {/* base */}
+      <group position={[0, -0.62, 0.45]}>
+        <RoundedBox args={[3.3, 0.14, 2.25]} radius={0.06} smoothness={4}>
+          <meshStandardMaterial color="#1f1a16" metalness={0.5} roughness={0.35} />
+        </RoundedBox>
+        <RoundedBox
+          args={[2.95, 0.02, 1.55]}
+          radius={0.03}
+          smoothness={4}
+          position={[0, 0.1, -0.08]}
+        >
+          <meshStandardMaterial color="#2c261f" metalness={0.25} roughness={0.7} />
+        </RoundedBox>
+        <RoundedBox
+          args={[0.85, 0.03, 0.48]}
+          radius={0.02}
+          smoothness={4}
+          position={[0, 0.11, 0.55]}
+        >
+          <meshStandardMaterial color="#3a322a" metalness={0.35} roughness={0.5} />
+        </RoundedBox>
+      </group>
+
+      {/* screen (opens back ~16°) */}
+      <group position={[0, -0.5, 0.45]} rotation={[0.28, 0, 0]}>
+        <RoundedBox
+          args={[3.3, 2.2, 0.1]}
+          radius={0.04}
+          smoothness={4}
+          position={[0, 0.9, 0]}
+        >
+          <meshStandardMaterial color="#141210" metalness={0.55} roughness={0.4} />
+        </RoundedBox>
+        <mesh position={[0, 0.9, 0.06]}>
+          <planeGeometry args={[3.02, 1.92]} />
+          <meshStandardMaterial color="#0f0d0b" metalness={0.5} roughness={0.35} />
+        </mesh>
+        <mesh position={[0, 0.9, 0.062]}>
+          <planeGeometry args={[2.82, 1.78]} />
+          <meshBasicMaterial map={codeTexture} toneMapped={false} />
+        </mesh>
+      </group>
+    </group>
+  );
 }
 
 export default function HeroScene() {
@@ -57,53 +168,24 @@ export default function HeroScene() {
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0, 0, 6], fov: 42 }}
+      camera={{ position: [0, 0, 6.2], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
       style={{ pointerEvents: "none" }}
       aria-hidden
     >
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[4, 6, 4]} intensity={1.4} color="#ffd9a0" />
-      <directionalLight position={[-4, -2, -4]} intensity={0.5} color="#d97951" />
+      <ambientLight intensity={0.75} />
+      <directionalLight position={[4, 6, 4]} intensity={1.5} color="#ffe2c0" />
+      <directionalLight position={[-3, 2, -3]} intensity={0.7} color="#d97951" />
+      <pointLight position={[-2, 1.5, 3.5]} intensity={0.5} color="#d97951" />
 
       <Rig>
-        <Float speed={reduced ? 0 : 1.6} rotationIntensity={0.5} floatIntensity={1.4}>
-          <mesh>
-            <sphereGeometry args={[1.35, 64, 64]} />
-            <MeshDistortMaterial
-              color="#a94a2c"
-              roughness={0.18}
-              metalness={0.05}
-              distort={0.35}
-              speed={reduced ? 0 : 1.5}
-            />
-          </mesh>
-        </Float>
-
-        <Float speed={reduced ? 0 : 2} rotationIntensity={1} floatIntensity={0.9}>
-          <mesh position={[2.15, -1.1, -1]}>
-            <torusGeometry args={[0.55, 0.18, 24, 64]} />
-            <meshStandardMaterial color="#d97951" roughness={0.3} metalness={0.25} />
-          </mesh>
-        </Float>
-
-        <Float speed={reduced ? 0 : 1.9} rotationIntensity={0.8} floatIntensity={1.1}>
-          <mesh position={[-2.25, 1.15, -1.4]}>
-            <icosahedronGeometry args={[0.48, 0]} />
-            <meshStandardMaterial color="#1b1713" roughness={0.35} metalness={0.4} flatShading />
-          </mesh>
-        </Float>
-
-        <Float speed={reduced ? 0 : 2.3} rotationIntensity={0.6} floatIntensity={1}>
-          <mesh position={[-1.7, -1.45, -2]}>
-            <torusKnotGeometry args={[0.3, 0.1, 120, 18]} />
-            <meshStandardMaterial color="#7b4b94" roughness={0.35} metalness={0.2} />
-          </mesh>
+        <Float speed={reduced ? 0 : 1.4} rotationIntensity={0.35} floatIntensity={0.9}>
+          <Laptop />
         </Float>
       </Rig>
 
-      <ContactShadows position={[0, -2.5, 0]} opacity={0.3} scale={10} blur={2.6} far={4.5} />
-      <Sparkles count={80} scale={9} size={2.2} speed={reduced ? 0 : 0.4} opacity={0.45} color="#d97951" />
+      <ContactShadows position={[0, -1.95, 0]} opacity={0.32} scale={11} blur={2.8} far={4} />
+      <Sparkles count={70} scale={9} size={2} speed={reduced ? 0 : 0.35} opacity={0.4} color="#d97951" />
     </Canvas>
   );
 }

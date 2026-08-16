@@ -56,8 +56,11 @@ export default function Home() {
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-accent/15 blur-3xl" />
           <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-accent-2/15 blur-3xl [animation-delay:-5s]" />
-          <div className="absolute inset-y-0 right-[-10%] hidden w-[55%] opacity-70 lg:block">
-            <HeroScene />
+          <div className="absolute inset-y-0 right-0 hidden w-[56%] lg:block">
+            <div className="absolute inset-0">
+              <HeroScene />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-cream to-transparent" />
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-cream" />
         </div>
@@ -122,9 +125,9 @@ export default function Home() {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+            initial={{ x: 40 }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
             className="justify-self-center lg:justify-self-end"
           >
             <Parallax offset={20}>
