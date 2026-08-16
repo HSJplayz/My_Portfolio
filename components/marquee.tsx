@@ -1,7 +1,7 @@
 export function Marquee({ items }: { items: string[] }) {
   const doubled = [...items, ...items];
   return (
-    <div className="relative overflow-hidden border-y border-line bg-cream-2/60 py-4">
+    <div className="marquee-pause relative overflow-hidden border-y border-line bg-cream-2/60 py-4">
       <div className="flex w-max animate-marquee gap-3 whitespace-nowrap">
         {doubled.map((item, i) => (
           <span

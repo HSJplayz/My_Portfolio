@@ -47,10 +47,10 @@ function Timeline({ items }: { items: typeof experience }) {
       <Stagger className="space-y-12">
         {items.map((item) => (
           <StaggerItem key={`${item.title}-${item.period}`}>
-            <div className="relative">
+            <div className="group relative rounded-xl p-4 -m-4 transition-colors duration-300 hover:bg-cream-2/50">
               <span
                 aria-hidden
-                className="absolute -left-[38px] top-2 h-2.5 w-2.5 rounded-full border-2 border-accent bg-cream"
+                className="absolute -left-[38px] top-6 h-2.5 w-2.5 rounded-full border-2 border-accent bg-cream transition-all duration-300 group-hover:scale-150 group-hover:bg-accent"
               />
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <span className="font-mono text-xs text-accent">{item.period}</span>
@@ -63,7 +63,7 @@ function Timeline({ items }: { items: typeof experience }) {
                   </span>
                 ))}
               </div>
-              <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink">
+              <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink transition-colors group-hover:text-accent">
                 {item.title}
               </h3>
               <p className="mt-0.5 text-sm text-muted">{item.org}</p>

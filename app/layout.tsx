@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { ChatWidget } from "@/components/chat-widget";
+import { ScrollProgress } from "@/components/scroll-progress";
 import { profile } from "@/data/profile";
 import "./globals.css";
 
@@ -50,8 +51,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-cream font-sans text-ink">
+      <body className="grain flex min-h-full flex-col bg-cream font-sans text-ink">
         <Nav />
+        <ScrollProgress />
         <main className="flex-1">{children}</main>
         <Footer />
         <ChatWidget />

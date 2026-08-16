@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
-import { ProjectCard } from "@/components/project-card";
-import { projects } from "@/data/projects";
+import { Reveal } from "@/components/motion";
+import { ProjectsGrid } from "@/components/projects-grid";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -22,13 +21,7 @@ export default function ProjectsPage() {
         </p>
       </Reveal>
 
-      <Stagger className="mt-16 grid gap-6 sm:grid-cols-2">
-        {projects.map((project, i) => (
-          <StaggerItem key={project.slug}>
-            <ProjectCard project={project} index={i} />
-          </StaggerItem>
-        ))}
-      </Stagger>
+      <ProjectsGrid />
     </section>
   );
 }

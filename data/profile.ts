@@ -17,4 +17,11 @@ export const profile = {
   instagram: "https://instagram.com/hrushijagtap233",
   instagramName: "@hrushijagtap233",
   resume: "/Hrushikesh-Jagtap-Resume.docx",
+  photos: [
+    { src: "/photos/photo-1.jpg", caption: "" },
+    { src: "/photos/photo-2.jpg", caption: "" },
+    { src: "/photos/photo-3.jpg", caption: "" },
+    { src: "/photos/photo-4.jpg", caption: "" },
+    { src: "/photos/photo-5.jpg", caption: "" },
+  ],
 } as const;

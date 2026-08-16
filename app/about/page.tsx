@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { Marquee } from "@/components/marquee";
 import { profile } from "@/data/profile";
@@ -13,19 +14,41 @@ export default function AboutPage() {
   return (
     <>
       <section className="mx-auto w-full max-w-5xl px-5 py-20 sm:py-28">
-        <Reveal>
-          <p className="mb-4 font-mono text-sm text-accent">( About )</p>
-          <h1 className="font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
-            Hrushikesh Jagtap
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-            {profile.bio.map((p, i) => (
-              <span key={i} className={i > 0 ? "mt-3 block" : ""}>
-                {p}
-              </span>
-            ))}
-          </p>
-        </Reveal>
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
+          <Reveal>
+            <div className="mx-auto w-full max-w-xs lg:mx-0">
+              <div className="rotate-2 rounded-sm bg-paper p-3 pb-5 shadow-card transition-transform duration-300 hover:rotate-0">
+                <div className="overflow-hidden rounded-xs bg-cream-2">
+                  <Image
+                    src="/photos/photo-1.jpg"
+                    alt={profile.name}
+                    width={512}
+                    height={640}
+                    sizes="(max-width: 1024px) 80vw, 320px"
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                </div>
+                <p className="pt-2 text-center font-display text-sm italic tracking-wide text-ink-2">
+                  Hrushikesh Jagtap — B.Tech CE, PCCOE
+                </p>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <p className="mb-4 font-mono text-sm text-accent">( About )</p>
+            <h1 className="font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
+              Hrushikesh Jagtap
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+              {profile.bio.map((p, i) => (
+                <span key={i} className={i > 0 ? "mt-3 block" : ""}>
+                  {p}
+                </span>
+              ))}
+            </p>
+          </Reveal>
+        </div>
 
         <div className="mt-14 grid gap-3 font-mono text-sm text-muted sm:grid-cols-2">
           <Reveal className="rounded-xl border border-line bg-cream-2/50 px-5 py-4">
