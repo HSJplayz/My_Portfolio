@@ -46,9 +46,10 @@ export async function POST(request: Request) {
 
     const knowledge = await getKnowledgeBase();
     const system = buildSystemPrompt(knowledge);
+    const model = await getModel();
 
     const result = streamText({
-      model: getModel(),
+      model,
       system,
       messages: await convertToModelMessages(messages),
     });
