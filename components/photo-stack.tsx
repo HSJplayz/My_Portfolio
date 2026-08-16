@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import { profile } from "@/data/profile";
+import { asset } from "@/lib/asset";
 
 const FAN = 5;
 const STACK_SIZE = 330;
@@ -55,7 +56,7 @@ export function PhotoStack() {
               >
                 <div className="relative overflow-hidden rounded-xs bg-cream-2">
                   <Image
-                    src={photo.src}
+                    src={asset(photo.src)}
                     alt={`${profile.name} — photo ${originalIdx + 1}`}
                     width={512}
                     height={640}

@@ -5,6 +5,7 @@ import { Marquee } from "@/components/marquee";
 import { profile } from "@/data/profile";
 import { skillGroups, marqueeSkills } from "@/data/skills";
 import { certifications, languages, activities } from "@/data/certifications";
+import { asset } from "@/lib/asset";
 
 export const metadata: Metadata = {
   title: "About",
@@ -20,7 +21,7 @@ export default function AboutPage() {
               <div className="rotate-2 rounded-sm bg-paper p-3 pb-5 shadow-card transition-transform duration-300 hover:rotate-0">
                 <div className="overflow-hidden rounded-xs bg-cream-2">
                   <Image
-                    src="/photos/photo-1.jpg"
+                    src={asset("/photos/photo-1.jpg")}
                     alt={profile.name}
                     width={512}
                     height={640}

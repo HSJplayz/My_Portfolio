@@ -117,15 +117,15 @@ function Laptop() {
   return (
     <group rotation={[0.06, -0.55, 0]} position={[0, 0.1, 0]}>
       {/* base */}
-      <group position={[0, -0.62, 0.45]}>
-        <RoundedBox args={[3.3, 0.14, 2.25]} radius={0.06} smoothness={4}>
-          <meshStandardMaterial color="#1f1a16" metalness={0.5} roughness={0.35} />
+      <group position={[0, -0.6, 0.42]}>
+        <RoundedBox args={[3.4, 0.12, 2.2]} radius={0.06} smoothness={4}>
+          <meshStandardMaterial color="#241f1a" metalness={0.55} roughness={0.35} />
         </RoundedBox>
         <RoundedBox
-          args={[2.95, 0.02, 1.55]}
+          args={[3.1, 0.02, 1.55]}
           radius={0.03}
           smoothness={4}
-          position={[0, 0.1, -0.08]}
+          position={[0, 0.08, -0.08]}
         >
           <meshStandardMaterial color="#2c261f" metalness={0.25} roughness={0.7} />
         </RoundedBox>
@@ -133,30 +133,32 @@ function Laptop() {
           args={[0.85, 0.03, 0.48]}
           radius={0.02}
           smoothness={4}
-          position={[0, 0.11, 0.55]}
+          position={[0, 0.09, 0.52]}
         >
           <meshStandardMaterial color="#3a322a" metalness={0.35} roughness={0.5} />
         </RoundedBox>
       </group>
 
-      {/* screen (opens back ~16°) */}
-      <group position={[0, -0.5, 0.45]} rotation={[0.28, 0, 0]}>
+      {/* screen (opens back ~24°) */}
+      <group position={[0, -0.48, 0.42]} rotation={[0.42, 0, 0]}>
         <RoundedBox
-          args={[3.3, 2.2, 0.1]}
+          args={[3.4, 2.25, 0.1]}
           radius={0.04}
           smoothness={4}
-          position={[0, 0.9, 0]}
+          position={[0, 0.92, 0]}
         >
-          <meshStandardMaterial color="#141210" metalness={0.55} roughness={0.4} />
+          <meshStandardMaterial color="#171310" metalness={0.55} roughness={0.4} />
         </RoundedBox>
-        <mesh position={[0, 0.9, 0.06]}>
-          <planeGeometry args={[3.02, 1.92]} />
+        <mesh position={[0, 0.92, 0.06]}>
+          <planeGeometry args={[3.1, 1.98]} />
           <meshStandardMaterial color="#0f0d0b" metalness={0.5} roughness={0.35} />
         </mesh>
-        <mesh position={[0, 0.9, 0.062]}>
-          <planeGeometry args={[2.82, 1.78]} />
+        <mesh position={[0, 0.92, 0.062]}>
+          <planeGeometry args={[2.88, 1.84]} />
           <meshBasicMaterial map={codeTexture} toneMapped={false} />
         </mesh>
+        {/* soft screen glow spill */}
+        <pointLight position={[0, -0.1, 1.4]} intensity={0.7} distance={4} color="#d97951" />
       </group>
     </group>
   );
@@ -168,7 +170,7 @@ export default function HeroScene() {
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0, 0, 6.2], fov: 40 }}
+      camera={{ position: [0, 0, 7], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
       style={{ pointerEvents: "none" }}
       aria-hidden

@@ -199,18 +199,14 @@ export function Counter({
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [value, setValue] = useState(() =>
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? to
-      : from
-  );
+  const [value, setValue] = useState(from);
   const started = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
     let start = 0;
 
@@ -226,7 +222,11 @@ export function Counter({
       (entries) => {
         if (entries[0].isIntersecting && !started.current) {
           started.current = true;
-          raf = requestAnimationFrame(step);
+          if (reduced) {
+            setValue(to);
+          } else {
+            raf = requestAnimationFrame(step);
+          }
           observer.disconnect();
         }
       },
