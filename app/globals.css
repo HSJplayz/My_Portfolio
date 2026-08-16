@@ -118,6 +118,13 @@ body {
   color: var(--color-ink);
 }
 
+/* Fix Fraunces "J" character clipping — add padding for descender */
+.font-display {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 ::selection {
   background: var(--color-accent);
   color: var(--color-paper);
