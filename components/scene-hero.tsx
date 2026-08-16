@@ -1,9 +1,20 @@
 "use client";
 
+// Laptop model: "Laptop" by Poly by Google — poly.pizza/m/6eBS-C3E33W — CC-BY 3.0.
+// https://creativecommons.org/licenses/by/3.0/
+
 import { Canvas, useFrame } from "@react-three/fiber";
-import { ContactShadows, Float, RoundedBox, Sparkles } from "@react-three/drei";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { ContactShadows, Float, Sparkles, useGLTF } from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
+import { asset } from "@/lib/asset";
+
+// Screen panel measured from the model (centered + scaled to 3.2 wide).
+const MODEL_WIDTH = 3.2;
+const SCREEN_CENTER: [number, number, number] = [-0.0006, 0.029, -1.0514];
+const SCREEN_NORMAL: [number, number, number] = [0, 0.2584, 0.966];
+const CODE_W = 2.86;
+const CODE_H = CODE_W * (640 / 1024);
 
 let targetX = 0;
 let targetY = 0;
@@ -111,55 +122,50 @@ function buildCodeTexture() {
 
 function Laptop() {
   const codeTexture = useMemo(() => buildCodeTexture(), []);
+  const { scene } = useGLTF(asset("/models/laptop.glb"));
+
+  const model = useMemo(() => {
+    const clone = scene.clone(true);
+    const box = new THREE.Box3().setFromObject(clone);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const scale = MODEL_WIDTH / size.x;
+    clone.scale.setScalar(scale);
+    clone.position.sub(center.multiplyScalar(scale));
+    return clone;
+  }, [scene]);
+
+  const screenQuat = useMemo(
+    () =>
+      new THREE.Quaternion().setFromUnitVectors(
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(...SCREEN_NORMAL)
+      ),
+    []
+  );
 
   useEffect(() => () => codeTexture.dispose(), [codeTexture]);
 
   return (
     <group rotation={[0.06, -0.55, 0]} position={[0, 0.1, 0]}>
-      {/* base */}
-      <group position={[0, -0.6, 0.42]}>
-        <RoundedBox args={[3.4, 0.12, 2.2]} radius={0.06} smoothness={4}>
-          <meshStandardMaterial color="#241f1a" metalness={0.55} roughness={0.35} />
-        </RoundedBox>
-        <RoundedBox
-          args={[3.1, 0.02, 1.55]}
-          radius={0.03}
-          smoothness={4}
-          position={[0, 0.08, -0.08]}
-        >
-          <meshStandardMaterial color="#2c261f" metalness={0.25} roughness={0.7} />
-        </RoundedBox>
-        <RoundedBox
-          args={[0.85, 0.03, 0.48]}
-          radius={0.02}
-          smoothness={4}
-          position={[0, 0.09, 0.52]}
-        >
-          <meshStandardMaterial color="#3a322a" metalness={0.35} roughness={0.5} />
-        </RoundedBox>
-      </group>
-
-      {/* screen (opens back ~24°) */}
-      <group position={[0, -0.48, 0.42]} rotation={[0.42, 0, 0]}>
-        <RoundedBox
-          args={[3.4, 2.25, 0.1]}
-          radius={0.04}
-          smoothness={4}
-          position={[0, 0.92, 0]}
-        >
-          <meshStandardMaterial color="#171310" metalness={0.55} roughness={0.4} />
-        </RoundedBox>
-        <mesh position={[0, 0.92, 0.06]}>
-          <planeGeometry args={[3.1, 1.98]} />
-          <meshStandardMaterial color="#0f0d0b" metalness={0.5} roughness={0.35} />
-        </mesh>
-        <mesh position={[0, 0.92, 0.062]}>
-          <planeGeometry args={[2.88, 1.84]} />
-          <meshBasicMaterial map={codeTexture} toneMapped={false} />
-        </mesh>
-        {/* soft screen glow spill */}
-        <pointLight position={[0, -0.1, 1.4]} intensity={0.7} distance={4} color="#d97951" />
-      </group>
+      <primitive object={model} />
+      <mesh
+        position={[
+          SCREEN_CENTER[0],
+          SCREEN_CENTER[1] - 0.05,
+          SCREEN_CENTER[2] + 0.012,
+        ]}
+        quaternion={screenQuat}
+      >
+        <planeGeometry args={[CODE_W, CODE_H]} />
+        <meshBasicMaterial map={codeTexture} toneMapped={false} />
+      </mesh>
+      <pointLight
+        position={[0, 0, SCREEN_CENTER[2] + 0.7]}
+        intensity={0.55}
+        distance={3.5}
+        color="#d97951"
+      />
     </group>
   );
 }
@@ -178,15 +184,18 @@ export default function HeroScene() {
       <ambientLight intensity={0.75} />
       <directionalLight position={[4, 6, 4]} intensity={1.5} color="#ffe2c0" />
       <directionalLight position={[-3, 2, -3]} intensity={0.7} color="#d97951" />
+      <directionalLight position={[0, 3, 6]} intensity={1.1} color="#fff0e0" />
       <pointLight position={[-2, 1.5, 3.5]} intensity={0.5} color="#d97951" />
 
       <Rig>
         <Float speed={reduced ? 0 : 1.4} rotationIntensity={0.35} floatIntensity={0.9}>
-          <Laptop />
+          <Suspense fallback={null}>
+            <Laptop />
+          </Suspense>
         </Float>
       </Rig>
 
-      <ContactShadows position={[0, -1.95, 0]} opacity={0.32} scale={11} blur={2.8} far={4} />
+      <ContactShadows position={[0, -1.3, 0]} opacity={0.32} scale={11} blur={2.8} far={5} />
       <Sparkles count={70} scale={9} size={2} speed={reduced ? 0 : 0.35} opacity={0.4} color="#d97951" />
     </Canvas>
   );

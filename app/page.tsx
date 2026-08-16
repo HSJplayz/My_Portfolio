@@ -4,47 +4,24 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "motion/react";
 import {
-  Counter,
   Parallax,
   Reveal,
   SplitText,
   Stagger,
   StaggerItem,
-  TiltCard,
   heroVariants,
 } from "@/components/motion";
 import { Marquee } from "@/components/marquee";
 import { PhotoStack } from "@/components/photo-stack";
 import { ProjectCard } from "@/components/project-card";
+import { FocusNotes } from "@/components/focus-notes";
 import { profile } from "@/data/profile";
 import { marqueeSkills } from "@/data/skills";
-import { stats } from "@/data/stats";
 import { projects } from "@/data/projects";
 
 const HeroScene = dynamic(() => import("@/components/scene-hero"), {
   ssr: false,
 });
-
-const focusAreas = [
-  {
-    title: "Computer Vision & ML",
-    tag: "YOLO · OpenCV · Scikit-learn",
-    description:
-      "Custom object-detection pipelines, dataset curation, augmentation, and real-time vision that ships onto hardware.",
-  },
-  {
-    title: "Full-Stack Development",
-    tag: "React · Next.js · Node · SQL",
-    description:
-      "Algorithm-first platforms and database-backed web apps — from problem sets and submissions to recipes and ratings.",
-  },
-  {
-    title: "Robotics & Hardware",
-    tag: "Arduino · ESP32 · Sensors",
-    description:
-      "Bridging vision to actuation — cameras that see, microcontrollers that decide, and arms that move.",
-  },
-];
 
 export default function Home() {
   const featured = projects.slice(0, 3);
@@ -150,26 +127,6 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ── Stats band ─────────────────────────── */}
-      <section className="border-y border-line bg-cream-2/60">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-8 px-5 py-10 sm:grid-cols-4">
-          {stats.map((stat, i) => (
-            <Reveal key={stat.label} delay={i * 0.07}>
-              <div className="text-center sm:text-left">
-                <p className="font-display text-4xl font-semibold tracking-tight text-ink">
-                  <Counter
-                    to={stat.value}
-                    decimals={stat.decimals}
-                    suffix={stat.suffix}
-                  />
-                </p>
-                <p className="mt-1 text-sm text-muted">{stat.label}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
       <Marquee items={marqueeSkills} />
 
       {/* ── Featured projects ─────────────────── */}
@@ -219,28 +176,7 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          <Stagger className="grid gap-6 md:grid-cols-3">
-            {focusAreas.map((area, i) => (
-              <StaggerItem key={area.title}>
-                <TiltCard className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl border border-line bg-paper p-7 shadow-card transition-colors hover:border-accent/50">
-                    <span className="font-mono text-xs text-accent">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="mt-4 font-display text-2xl font-semibold tracking-tight text-ink">
-                      {area.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">
-                      {area.description}
-                    </p>
-                    <p className="mt-6 border-t border-line pt-4 font-mono text-xs text-accent-2">
-                      {area.tag}
-                    </p>
-                  </div>
-                </TiltCard>
-              </StaggerItem>
-            ))}
-          </Stagger>
+          <FocusNotes />
         </div>
       </section>
 

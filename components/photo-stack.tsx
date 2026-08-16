@@ -12,14 +12,24 @@ const STACK_SIZE = 330;
 export function PhotoStack() {
   const photos = profile.photos;
   const [order, setOrder] = useState(() => photos.map((_, i) => i));
+  const [zoomed, setZoomed] = useState(false);
   const top = order.length - 1;
   const active = order[top];
 
   const bringToFront = (idx: number) =>
-    setOrder((o) => (o[o.length - 1] === idx ? o : [...o.filter((x) => x !== idx), idx]));
+    setOrder((o) => {
+      if (o[o.length - 1] === idx) {
+        setZoomed((z) => !z);
+        return o;
+      }
+      setZoomed(true);
+      return [...o.filter((x) => x !== idx), idx];
+    });
 
-  const cycle = (dir: 1 | -1) =>
+  const cycle = (dir: 1 | -1) => {
+    setZoomed(false);
     bringToFront((active + dir + photos.length) % photos.length);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -49,7 +59,7 @@ export function PhotoStack() {
                   rotate: depth * FAN * (p % 2 === 0 ? -1 : 1),
                   x: depth * 10,
                   y: -depth * 4,
-                  scale: 1 - depth * 0.05,
+                  scale: isTop && zoomed ? 1.12 : 1 - depth * 0.05,
                 }}
                 transition={{ type: "spring", stiffness: 200, damping: 24 }}
                 className="group block w-[min(72vw,270px)] cursor-pointer rounded-sm bg-paper p-3 pb-2 text-left shadow-card transition-shadow hover:shadow-lift"
@@ -91,7 +101,7 @@ export function PhotoStack() {
         </StackButton>
       </div>
       <p className="mt-3 font-mono text-xs text-muted">
-        Click a photo to bring it forward
+        Click a photo to zoom in on it
       </p>
     </div>
   );

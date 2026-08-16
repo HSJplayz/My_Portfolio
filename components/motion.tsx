@@ -9,9 +9,7 @@ import {
   type Variants,
 } from "motion/react";
 import {
-  useEffect,
   useRef,
-  useState,
   type CSSProperties,
   type MouseEvent,
   type ReactNode,
@@ -177,77 +175,6 @@ export function SplitText({
         </span>
       ))}
     </motion.span>
-  );
-}
-
-/** Counts up to `to` when scrolled into view. */
-export function Counter({
-  to,
-  from = 0,
-  duration = 1.6,
-  decimals = 0,
-  suffix = "",
-  prefix = "",
-  className,
-}: {
-  to: number;
-  from?: number;
-  duration?: number;
-  decimals?: number;
-  suffix?: string;
-  prefix?: string;
-  className?: string;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const [value, setValue] = useState(from);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let raf = 0;
-    let start = 0;
-
-    const step = (t: number) => {
-      if (!start) start = t;
-      const p = Math.min((t - start) / (duration * 1000), 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setValue(from + (to - from) * eased);
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !started.current) {
-          started.current = true;
-          if (reduced) {
-            setValue(to);
-          } else {
-            raf = requestAnimationFrame(step);
-          }
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.4 }
-    );
-    observer.observe(el);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(raf);
-    };
-  }, [to, from, duration]);
-
-  return (
-    <span ref={ref} className={className}>
-      {prefix}
-      {value.toLocaleString("en-US", {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })}
-      {suffix}
-    </span>
   );
 }
 

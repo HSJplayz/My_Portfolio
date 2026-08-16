@@ -1,10 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
+
+const ChatBot = dynamic(() => import("@/components/chat-bot").then((m) => m.ChatBot), {
+  ssr: false,
+});
 
 const CHAT_API = process.env.NEXT_PUBLIC_CHAT_API || "/api/chat";
 
@@ -46,16 +51,21 @@ export function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.96 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed bottom-24 right-5 z-50 flex h-[520px] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-line bg-paper shadow-2xl shadow-ink/15"
+            className="fixed bottom-24 right-5 z-50 flex h-[520px] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-[#faf3e3] to-paper shadow-2xl shadow-ink/15"
           >
-            <div className="flex items-center justify-between border-b border-line bg-cream-2/70 px-4 py-3">
-              <div>
-                <p className="font-display text-lg text-ink">
-                  Ask me about Hrushikesh
-                </p>
-                <p className="text-xs text-muted">
-                  Grounded on his real profile only
-                </p>
+            <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-accent/10 via-cream-2 to-accent-2/15 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 shrink-0">
+                  <ChatBot busy={busy} />
+                </div>
+                <div>
+                  <p className="font-display text-lg text-ink">
+                    Ask me about Hrushikesh
+                  </p>
+                  <p className="text-xs text-muted">
+                    {busy ? "thinking…" : "usually replies in seconds"}
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -90,7 +100,7 @@ export function ChatWidget() {
                         {text}
                       </div>
                     ) : (
-                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-line bg-cream px-3.5 py-2.5 text-sm leading-relaxed text-ink [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_code]:rounded [&_code]:bg-line [&_code]:px-1 [&_code]:py-0.5 [&_strong]:font-semibold [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_h1]:mb-1.5 [&_h2]:mb-1.5 [&_h3]:mb-1.5 [&_hr]:my-2 [&_hr]:border-line">
+                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-accent/15 bg-cream px-3.5 py-2.5 text-sm leading-relaxed text-ink [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_code]:rounded [&_code]:bg-line [&_code]:px-1 [&_code]:py-0.5 [&_strong]:font-semibold [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_h1]:mb-1.5 [&_h2]:mb-1.5 [&_h3]:mb-1.5 [&_hr]:my-2 [&_hr]:border-line">
                         <ReactMarkdown>{text}</ReactMarkdown>
                       </div>
                     )}
@@ -105,7 +115,7 @@ export function ChatWidget() {
                         key={i}
                         animate={{ opacity: [0.2, 1, 0.2] }}
                         transition={{ duration: 1, repeat: Infinity, delay: i * 0.18 }}
-                        className="h-1.5 w-1.5 rounded-full bg-muted"
+                        className="h-1.5 w-1.5 rounded-full bg-accent"
                       />
                     ))}
                   </div>

@@ -7,8 +7,8 @@
   --color-ink: #1b1713;
   --color-ink-2: #2c261f;
   --color-muted: #72695c;
-  --color-accent: #a94a2c;
-  --color-accent-2: #d97951;
+  --color-accent: #b8561f;
+  --color-accent-2: #e08a3c;
   --color-line: #e3d9c6;
   --font-sans: var(--font-inter);
   --font-display: var(--font-fraunces);
@@ -75,6 +75,26 @@
   }
 }
 
+@keyframes swing {
+  0%,
+  100% {
+    transform: rotate(var(--swing-a, -2deg));
+  }
+  50% {
+    transform: rotate(var(--swing-b, 2deg));
+  }
+}
+
+@keyframes swing-hover {
+  0%,
+  100% {
+    transform: rotate(calc(var(--swing-a, -2deg) * 2.4));
+  }
+  50% {
+    transform: rotate(calc(var(--swing-b, 2deg) * 2.4));
+  }
+}
+
 @theme {
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
@@ -108,12 +128,26 @@ html {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
 }
 
+.note-swing {
+  transform-origin: top center;
+  animation-name: swing;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.group:hover .note-swing {
+  animation-name: swing-hover;
+  animation-duration: 0.8s;
+  animation-iteration-count: infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-float,
   .animate-drift,
   .animate-slow-spin,
-  .animate-pulse-ring {
+  .animate-pulse-ring,
+  .note-swing {
     animation: none;
   }
 }
