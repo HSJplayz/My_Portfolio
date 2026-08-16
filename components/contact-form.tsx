@@ -13,6 +13,17 @@ export function ContactForm() {
     "idle",
   );
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = `mailto:${profile.email}`;
+    }
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -110,9 +121,14 @@ export function ContactForm() {
           </button>
           <a
             href={mailtoHref}
+            onClick={(e) => {
+              if (!navigator.clipboard) return;
+              e.preventDefault();
+              copyEmail();
+            }}
             className="text-sm text-muted underline-offset-4 transition-colors hover:text-accent hover:underline"
           >
-            or email me directly
+            {copied ? "Email copied ✓" : "or email me directly"}
           </a>
         </div>
       </form>

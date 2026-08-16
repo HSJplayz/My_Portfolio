@@ -38,6 +38,14 @@ export function Footer() {
             >
               LeetCode
             </a>
+            <a
+              href={profile.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted underline-offset-4 transition-colors hover:text-accent hover:underline"
+            >
+              Instagram
+            </a>
             <Link
               href="/contact"
               className="text-muted underline-offset-4 transition-colors hover:text-accent hover:underline"

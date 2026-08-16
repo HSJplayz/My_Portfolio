@@ -13,6 +13,7 @@ Location: Akurdi, Pune, Maharashtra, India.
 - Phone: +91 74990 02102
 - GitHub: https://github.com/HSJplayz
 - LeetCode: https://leetcode.com/u/Hrushikesh_Jagtap (username Hrushikesh_Jagtap)
+- Instagram: https://instagram.com/hrushijagtap333 (@hrushijagtap333)
 - Resume download available on the Contact page.
 
 ## Summary
@@ -28,14 +29,17 @@ Hrushikesh builds algorithmic data structure tools, full-stack platforms, and re
 - Authored technical documentation and digital promotional content with student researchers.
 
 ## Projects
+### Portfolio Website
+A minimal, editorial-style portfolio built with Next.js 16, TypeScript, Tailwind CSS v4 and Motion. Includes an AI chat widget (Vercel AI SDK + Google Gemini) grounded on this knowledge base, and a Resend contact form. Source: https://github.com/HSJplayz/My_Portfolio, live at https://my-portfolio-kappa-teal-10.vercel.app.
+
 ### Placement360
-A full-stack placement preparation platform inspired by LeetCode. Students practice company-specific DSA problems; teachers review their work and give personal guidance. Built with JavaScript, Node.js, Express, MySQL and REST APIs.
+A full-stack placement preparation platform inspired by LeetCode. Students practice company-specific DSA problems; teachers review their work and give personal guidance. Built with JavaScript, Node.js, Express, MySQL and REST APIs. Source: https://github.com/HSJplayz/Cep_website.
 
 ### RecipeRoute
-A recipe discovery & analytics web application built as a DBMS project. Relational MySQL database indexing thousands of Kaggle recipe records; SQL join queries and dynamic filtering by ingredients, prep duration and dietary categories. Users can log in, browse recipes with photos, rate dishes, and add their own recipes.
+A recipe discovery & analytics web application built as a DBMS project. Relational MySQL database indexing thousands of Kaggle recipe records; SQL join queries and dynamic filtering by ingredients, prep duration and dietary categories. Users can log in, browse recipes with photos, rate dishes, and add their own recipes. Source: https://github.com/HSJplayz/DBMS_FA.
 
 ### Real-Time Word Prediction Engine
-A word predictor and autocorrect system in C++ using Trie and HashMap data structures. O(K) time complexity lookups and sub-millisecond latency.
+A word predictor and autocorrect system in C++ using Trie and HashMap data structures. O(K) time complexity lookups and sub-millisecond latency. Source: https://github.com/HSJplayz/ADS_FA.
 
 ### Carbon Footprint Tracker
 A Smart India Hackathon (SIH) project in Python that tracks a user's carbon footprint and shows how it impacts the environment. Integrated Google Sheets API for cloud logging, Pixela API for habit visualization, and Twilio API for SMS alerts.

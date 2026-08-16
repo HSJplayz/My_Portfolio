@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Reveal } from "@/components/motion";
 import { ContactForm } from "@/components/contact-form";
 import { profile } from "@/data/profile";
@@ -68,17 +69,31 @@ export default function ContactPage() {
               </a>
             </div>
 
+            <div>
+              <p className="mb-1.5 font-mono text-xs uppercase tracking-widest text-accent">
+                Instagram
+              </p>
+              <a
+                href={profile.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-lg text-ink underline-offset-4 transition-colors hover:text-accent hover:underline"
+              >
+                {profile.instagramName}
+              </a>
+            </div>
+
             <div className="border-t border-line pt-6">
               <p className="mb-3 font-mono text-xs uppercase tracking-widest text-accent">
                 Resume
               </p>
-              <a
+              <Link
                 href={profile.resume}
                 download
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm text-paper transition-colors hover:bg-accent"
               >
                 Download resume ↓
-              </a>
+              </Link>
             </div>
           </div>
         </Reveal>

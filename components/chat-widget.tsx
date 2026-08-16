@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "motion/react";
+import ReactMarkdown from "react-markdown";
 
 const CHAT_API = process.env.NEXT_PUBLIC_CHAT_API || "/api/chat";
 
@@ -84,15 +85,15 @@ export function ChatWidget() {
                     key={m.id}
                     className={`flex ${isUser ? "justify-end" : "justify-start"}`}
                   >
-                    <div
-                      className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-                        isUser
-                          ? "rounded-br-sm bg-accent text-paper"
-                          : "rounded-bl-sm border border-line bg-cream text-ink"
-                      }`}
-                    >
-                      {text}
-                    </div>
+                    {isUser ? (
+                      <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-sm bg-accent px-3.5 py-2.5 text-sm leading-relaxed text-paper">
+                        {text}
+                      </div>
+                    ) : (
+                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm border border-line bg-cream px-3.5 py-2.5 text-sm leading-relaxed text-ink [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_code]:rounded [&_code]:bg-line [&_code]:px-1 [&_code]:py-0.5 [&_strong]:font-semibold [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_h1]:mb-1.5 [&_h2]:mb-1.5 [&_h3]:mb-1.5 [&_hr]:my-2 [&_hr]:border-line">
+                        <ReactMarkdown>{text}</ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 );
               })}

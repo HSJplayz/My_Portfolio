@@ -15,6 +15,29 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "portfolio-website",
+    name: "Portfolio Website",
+    category: "Web · Next.js",
+    summary:
+      "This very site — a minimal, editorial-style portfolio with a Gemini-powered chat widget and a Resend contact form.",
+    description: [
+      "A minimal, editorial-style portfolio built with Next.js 16, TypeScript, Tailwind CSS v4 and Motion (Framer Motion), deployed to Vercel with a GitHub Pages fallback.",
+      "It features an AI chat widget powered by the Vercel AI SDK and Google Gemini that answers questions about Hrushikesh, grounded on a local knowledge base so it only talks about real facts.",
+      "The contact form delivers messages straight to his inbox via Resend, and the whole site is static-exportable — the same codebase ships to Vercel (with serverless APIs) and GitHub Pages.",
+    ],
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Motion", "AI SDK", "Gemini"],
+    highlights: [
+      "Gemini-powered chatbot grounded on a personal knowledge base",
+      "Resend contact form with serverless API routes",
+      "Dual deploy: Vercel + static GitHub Pages export",
+    ],
+    links: {
+      github: "https://github.com/HSJplayz/My_Portfolio",
+      live: "https://my-portfolio-kappa-teal-10.vercel.app",
+    },
+    accent: "#7b4b94",
+  },
+  {
     slug: "placement360",
     name: "Placement360",
     category: "Full-Stack · DSA Platform",
@@ -32,7 +55,7 @@ export const projects: Project[] = [
       "Progress tracking dashboards",
     ],
     links: {
-      github: "https://github.com/HSJplayz",
+      github: "https://github.com/HSJplayz/Cep_website",
     },
     accent: "#a94a2c",
   },
@@ -54,7 +77,7 @@ export const projects: Project[] = [
       "Login, photos & ratings",
     ],
     links: {
-      github: "https://github.com/HSJplayz",
+      github: "https://github.com/HSJplayz/DBMS_FA",
     },
     accent: "#4d6b3a",
   },
@@ -76,7 +99,7 @@ export const projects: Project[] = [
       "Autocorrect + next-word suggestions",
     ],
     links: {
-      github: "https://github.com/HSJplayz",
+      github: "https://github.com/HSJplayz/ADS_FA",
     },
     accent: "#31546e",
   },
@@ -97,9 +120,7 @@ export const projects: Project[] = [
       "Cloud logging + habit tracking + SMS alerts",
       "Emissions visualized as environmental impact",
     ],
-    links: {
-      github: "https://github.com/HSJplayz",
-    },
+    links: {},
     accent: "#5b6d8c",
   },
   {
@@ -119,9 +140,7 @@ export const projects: Project[] = [
       "C# game architecture",
       "In progress — worlds to expand",
     ],
-    links: {
-      github: "https://github.com/HSJplayz",
-    },
+    links: {},
     accent: "#7a5c3e",
   },
 ];
