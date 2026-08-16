@@ -25,7 +25,8 @@ function createGoogleModel(model: string): LanguageModel {
 }
 
 function createGroqModel(model: string): LanguageModel {
-  return groq(process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile");
+  const apiKey = process.env.GROQ_API_KEY;
+  return groq(model, apiKey ? { apiKey } : undefined);
 }
 
 function isQuotaError(error: unknown): boolean {
