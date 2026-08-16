@@ -34,6 +34,14 @@ export default function Home() {
           <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-coral/25 blur-3xl" />
           <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-violet/25 blur-3xl [animation-delay:-5s]" />
           <div className="absolute right-[-4%] bottom-16 h-72 w-72 animate-drift rounded-full bg-teal/20 blur-3xl [animation-delay:-11s]" />
+          <div className="absolute left-[5%] top-[14%] animate-float font-display text-2xl text-coral/60">✦</div>
+          <div className="absolute left-[40%] top-[10%] animate-slow-spin text-lg text-teal/60">◆</div>
+          <div className="absolute left-[10%] bottom-[22%] animate-float text-xl text-violet/60 [animation-delay:-3s]">●</div>
+          <div className="absolute left-[30%] bottom-[12%] animate-slow-spin text-sm text-rose/50 [animation-delay:-8s]">✦</div>
+          <div className="absolute right-[7%] top-[9%] animate-slow-spin text-lg text-rose/50 [animation-delay:-6s]">✦</div>
+          <div className="absolute right-[28%] top-[46%] animate-float text-sm text-gold/60 [animation-delay:-5s]">◆</div>
+          <div className="absolute bottom-[8%] right-[32%] animate-float text-base text-lavender/60 [animation-delay:-2s]">●</div>
+          <div className="absolute -left-8 bottom-0 h-72 w-72 bg-dots opacity-70" />
           <div className="absolute inset-y-0 right-0 hidden w-[56%] lg:block">
             <div className="absolute inset-0">
               <HeroScene />
@@ -131,7 +139,12 @@ export default function Home() {
       <Marquee items={marqueeSkills} />
 
       {/* ── Featured projects ─────────────────── */}
-      <section className="mx-auto w-full max-w-5xl px-5 py-24">
+      <section className="relative mx-auto w-full max-w-5xl px-5 py-24">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute right-0 top-4 h-64 w-64 rounded-full bg-violet/10 blur-3xl" />
+          <div className="absolute -left-10 bottom-0 h-72 w-72 rounded-full bg-teal/10 blur-3xl" />
+          <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-coral/5 blur-3xl" />
+        </div>
         <Reveal>
           <div className="mb-12 flex items-end justify-between">
             <div>
@@ -168,8 +181,14 @@ export default function Home() {
       </section>
 
       {/* ── What I do ─────────────────────────── */}
-      <section className="border-t border-line bg-cream-2/50">
-        <div className="mx-auto w-full max-w-5xl px-5 py-24">
+      <section className="relative border-t border-line bg-cream-2/50">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-16 top-1/4 h-64 w-64 rounded-full bg-violet/15 blur-3xl" />
+          <div className="absolute -right-16 top-2/3 h-72 w-72 rounded-full bg-coral/15 blur-3xl" />
+          <div className="absolute right-[12%] top-[14%] animate-float text-lg text-teal/50">✦</div>
+          <div className="absolute left-[10%] bottom-[12%] animate-slow-spin text-sm text-gold/50 [animation-delay:-7s]">◆</div>
+        </div>
+        <div className="relative mx-auto w-full max-w-5xl px-5 py-24">
           <Reveal>
             <p className="mb-3 font-mono text-sm text-violet">( Focus )</p>
             <h2 className="mb-12 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
@@ -182,7 +201,11 @@ export default function Home() {
       </section>
 
       {/* ── About preview ──────────────────────── */}
-      <section className="mx-auto w-full max-w-5xl px-5 py-24">
+      <section className="relative mx-auto w-full max-w-5xl px-5 py-24">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute right-0 top-1/3 h-64 w-64 rounded-full bg-rose/10 blur-3xl" />
+          <div className="absolute left-0 bottom-0 h-56 w-56 rounded-full bg-sky/10 blur-3xl" />
+        </div>
         <div className="grid gap-10 sm:grid-cols-[1fr_1.4fr]">
           <Reveal>
             <p className="mb-3 font-mono text-sm text-teal">( About )</p>
@@ -213,6 +236,9 @@ export default function Home() {
             <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-violet/25 blur-3xl" />
             <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-teal/25 blur-3xl [animation-delay:-8s]" />
             <div className="absolute right-0 top-1/2 h-64 w-64 animate-drift rounded-full bg-rose/15 blur-3xl [animation-delay:-13s]" />
+            <div className="absolute left-[15%] top-[18%] animate-float font-display text-2xl text-coral/50">✦</div>
+            <div className="absolute right-[18%] bottom-[20%] animate-slow-spin text-lg text-lavender/50 [animation-delay:-9s]">◆</div>
+            <div className="absolute left-[30%] bottom-[10%] animate-float text-base text-sky/50 [animation-delay:-4s]">●</div>
         </div>
         <div className="relative mx-auto max-w-5xl px-5 py-28 text-center">
           <Reveal>

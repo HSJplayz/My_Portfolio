@@ -36,20 +36,20 @@ function Robot({ mode }: { mode: BotMode }) {
     const typing = mode === "typing";
 
     // look targets per mode
-    const headYTarget = typing ? -0.32 : thinking ? 0.3 : speaking ? Math.sin(t * 1.1) * 0.15 : Math.sin(t * 0.7) * 0.25;
-    const headXTarget = typing ? -0.18 : thinking ? 0.22 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.03 : 0.03 + Math.sin(t * 0.5) * 0.02;
-    const headZTarget = typing ? 0.06 : thinking ? 0.08 : speaking ? Math.sin(t * 1.6) * 0.03 : Math.sin(t * 0.6) * 0.05;
+    const headYTarget = typing ? -0.4 : thinking ? 0.42 : speaking ? Math.sin(t * 1.1) * 0.18 : Math.sin(t * 0.7) * 0.25;
+    const headXTarget = typing ? -0.24 : thinking ? 0.32 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.04 : 0.03 + Math.sin(t * 0.5) * 0.02;
+    const headZTarget = typing ? 0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.6) * 0.04 : Math.sin(t * 0.6) * 0.05;
 
-    const pupilXTarget = typing ? -0.018 : thinking ? 0.016 : speaking ? Math.sin(t * 2.6) * 0.012 : Math.sin(t * 0.45) * 0.016;
-    const pupilYTarget = typing ? -0.014 : thinking ? 0.013 : 0;
+    const pupilXTarget = typing ? -0.022 : thinking ? 0.02 : speaking ? Math.sin(t * 2.6) * 0.014 : Math.sin(t * 0.45) * 0.016;
+    const pupilYTarget = typing ? -0.016 : thinking ? 0.015 : 0;
 
     // brows
-    const browLTarget = typing ? 0.14 : thinking ? -0.26 : 0;
-    const browRTarget = typing ? 0.14 : thinking ? 0.26 : 0;
+    const browLTarget = typing ? 0.16 : thinking ? -0.3 : 0;
+    const browRTarget = typing ? 0.16 : thinking ? 0.3 : 0;
 
     // mouth: idle smile / typing neutral / thinking hmm / speaking talk
     const mouthScale = speaking
-      ? 0.55 + 0.45 * Math.abs(Math.sin(t * 8))
+      ? 0.55 + 0.5 * Math.abs(Math.sin(t * 7))
       : thinking
         ? 0.38
         : typing
@@ -62,20 +62,20 @@ function Robot({ mode }: { mode: BotMode }) {
       : speaking
         ? -0.55 + Math.sin(t * 3) * 0.35
         : typing
-          ? -0.3 + Math.sin(t * 1.3) * 0.05
+          ? -0.5 + Math.sin(t * 7) * 0.32
           : -0.05 + Math.sin(t * 1.1) * 0.09;
     const armRTarget = thinking
       ? 0.1 + Math.sin(t * 0.7) * 0.06
       : speaking
         ? -0.55 + Math.sin(t * 3 + 1.2) * 0.35
         : typing
-          ? -0.3 + Math.sin(t * 1.3 + 1.1) * 0.05
+          ? -0.5 + Math.sin(t * 7 + 1.3) * 0.32
           : -0.05 + Math.sin(t * 1.1 + 1.4) * 0.09;
 
     const swayTarget = thinking
-      ? Math.sin(t * 0.7) * 0.04
+      ? Math.sin(t * 0.7) * 0.05
       : speaking
-        ? Math.sin(t * 2.4) * 0.03
+        ? Math.sin(t * 2.4) * 0.04
         : Math.sin(t * (typing ? 1.4 : 0.9)) * 0.03;
 
     // blink
@@ -131,7 +131,7 @@ function Robot({ mode }: { mode: BotMode }) {
 
   return (
     <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
-      <group ref={bodySway} scale={1.3}>
+      <group ref={bodySway} scale={1.45}>
         {/* antenna */}
         <mesh position={[0, 0.52, 0]}>
           <cylinderGeometry args={[0.012, 0.012, 0.16, 8]} />
@@ -143,10 +143,10 @@ function Robot({ mode }: { mode: BotMode }) {
         </mesh>
 
         {/* thinking dots */}
-        <group position={[0, 0.78, 0]}>
+        <group position={[0, 0.82, 0]}>
           {[0, 1, 2].map((i) => (
-            <mesh key={i} ref={dots[i]} position={[(i - 1) * 0.075, 0, 0]}>
-              <sphereGeometry args={[0.028, 10, 10]} />
+            <mesh key={i} ref={dots[i]} position={[(i - 1) * 0.095, 0, 0]}>
+              <sphereGeometry args={[0.042, 10, 10]} />
               <meshBasicMaterial color="#d97951" />
             </mesh>
           ))}
@@ -246,7 +246,7 @@ export function ChatBot({ mode }: { mode: BotMode }) {
   return (
     <Canvas
       dpr={[1, 2]}
-      camera={{ position: [0, 0, 2.2], fov: 40 }}
+      camera={{ position: [0, 0, 2.45], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
       style={{ pointerEvents: "none" }}
       aria-hidden

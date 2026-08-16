@@ -61,9 +61,9 @@ export function ChatWidget() {
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="fixed bottom-24 right-5 z-50 flex h-[520px] w-[calc(100vw-2.5rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-[#faf3e3] to-paper shadow-2xl shadow-ink/15"
           >
-            <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-accent/10 via-cream-2 to-accent-2/15 px-4 py-3">
+            <div className="flex items-center justify-between border-b border-line bg-gradient-to-r from-coral/15 via-cream-2 to-teal/15 px-4 py-3">
               <div className="flex items-center gap-3">
-                <div className="h-16 w-16 shrink-0">
+                <div className="h-20 w-20 shrink-0">
                   <ChatBot mode={mode} />
                 </div>
                 <div>

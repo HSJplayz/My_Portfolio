@@ -100,9 +100,6 @@ export function PhotoStack() {
           →
         </StackButton>
       </div>
-      <p className="mt-3 font-mono text-xs text-muted">
-        Click a photo to zoom in on it
-      </p>
     </div>
   );
 }

@@ -203,7 +203,7 @@ function useCodeScreen() {
     if (!tex) return;
     const s = state.current;
     const t = clock.getElapsedTime();
-    const rate = 60;
+    const rate = 16;
     const total = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
     if (t < s.startAt + total / rate) {
       s.chars = Math.floor((t - s.startAt) * rate);
@@ -213,16 +213,15 @@ function useCodeScreen() {
         s.tab = (s.tab + 1) % TABS.length;
         const nextTotal = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
         s.startAt = t;
-        s.holdUntil = t + nextTotal / rate + 2.6;
+        s.holdUntil = t + nextTotal / rate + 2;
         s.chars = 0;
       }
     }
-    s.cursor = Math.floor(t * 1.6) % 2 === 0;
-    const sig = `${s.tab}|${Math.floor(s.chars)}|${s.cursor}`;
+    const sig = `${s.tab}|${Math.floor(s.chars)}`;
     if (sig === lastSig.current) return;
     lastSig.current = sig;
     const ctx = (tex.image as HTMLCanvasElement).getContext("2d");
-    if (ctx) drawCode(ctx, s.tab, Math.floor(s.chars), s.cursor);
+    if (ctx) drawCode(ctx, s.tab, Math.floor(s.chars), true);
     tex.needsUpdate = true;
   });
 
@@ -289,11 +288,6 @@ function Laptop() {
     g.translate(0, PANEL_H * 1.06 / 2, 0);
     return g;
   }, []);
-  const hitGeom = useMemo(() => {
-    const g = new THREE.PlaneGeometry(PANEL_W * 1.1, PANEL_H * 1.18);
-    g.translate(0, PANEL_H * 1.18 / 2, 0);
-    return g;
-  }, []);
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
@@ -310,9 +304,17 @@ function Laptop() {
     }
     if (panelRef.current) panelRef.current.scale.y = a.rise;
     if (codeRef.current) codeRef.current.scale.y = a.rise;
-    if (codeMat.current) codeMat.current.opacity = a.code;
+    if (codeMat.current) {
+      codeMat.current.opacity = a.code;
+      const wantOpaque = a.code >= 0.999;
+      if (codeMat.current.transparent === wantOpaque) {
+        codeMat.current.transparent = !wantOpaque;
+        codeMat.current.needsUpdate = true;
+      }
+    }
     if (glowRef.current) glowRef.current.intensity = a.glow;
     if (flashMat.current) flashMat.current.opacity = a.flash;
+    if (flashRef.current) flashRef.current.visible = a.flash > 0.01;
   }, []);
 
   const tweenTo = useCallback(
@@ -406,38 +408,49 @@ function Laptop() {
       panelGeom.dispose();
       codeGeom.dispose();
       flashGeom.dispose();
-      hitGeom.dispose();
     },
-    [panelGeom, codeGeom, flashGeom, hitGeom]
+    [panelGeom, codeGeom, flashGeom]
   );
 
+  const normal = useMemo(() => new THREE.Vector3(...SCREEN_NORMAL).normalize(), []);
   const panelPos = useMemo(
-    () => screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2),
-    [screenCenter, screenUp]
+    () => screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2).addScaledVector(normal, 0.02),
+    [screenCenter, screenUp, normal]
   );
   const codePos = useMemo(
-    () => screenCenter.clone().addScaledVector(screenUp, -CODE_H / 2),
-    [screenCenter, screenUp]
+    () => screenCenter.clone().addScaledVector(screenUp, -CODE_H / 2).addScaledVector(normal, 0.04),
+    [screenCenter, screenUp, normal]
   );
-  const normal = useMemo(() => new THREE.Vector3(...SCREEN_NORMAL).normalize(), []);
+  const flashPos = useMemo(
+    () => screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2).addScaledVector(normal, 0.06),
+    [screenCenter, screenUp, normal]
+  );
 
   return (
     <group rotation={[0.04, -0.85, 0]} position={[0.6, -0.15, 0]}>
       <group ref={group} rotation={[1.2, 0, 0]}>
-        <primitive object={model} />
-        <mesh ref={panelRef} position={panelPos.clone()} quaternion={screenQuat} scale={[1, 0.03, 1]}>
+        <primitive
+          object={model}
+          onClick={(e: { stopPropagation: () => void }) => {
+            e.stopPropagation();
+            togglePower();
+          }}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        />
+        <mesh ref={panelRef} position={panelPos} quaternion={screenQuat} renderOrder={0}>
           <primitive object={panelGeom} attach="geometry" />
           <meshStandardMaterial color="#0d0b09" metalness={0.6} roughness={0.3} />
         </mesh>
-        <mesh ref={codeRef} position={codePos.clone()} quaternion={screenQuat} scale={[1, 0.03, 1]}>
+        <mesh ref={codeRef} position={codePos} quaternion={screenQuat} renderOrder={1}>
           <primitive object={codeGeom} attach="geometry" />
           <meshBasicMaterial ref={codeMat} map={codeTexture} toneMapped={false} transparent opacity={0} />
         </mesh>
         <mesh
           ref={flashRef}
-          position={panelPos.clone().addScaledVector(normal, 0.03)}
+          position={flashPos}
           quaternion={screenQuat}
-          scale={[1, 0.03, 1]}
+          renderOrder={2}
         >
           <primitive object={flashGeom} attach="geometry" />
           <meshBasicMaterial
@@ -449,20 +462,6 @@ function Laptop() {
             depthWrite={false}
             blending={THREE.AdditiveBlending}
           />
-        </mesh>
-        <mesh
-          position={panelPos.clone().addScaledVector(normal, 0.05)}
-          quaternion={screenQuat}
-          scale={[1, 0.03, 1]}
-          onClick={(e) => {
-            e.stopPropagation();
-            togglePower();
-          }}
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-        >
-          <primitive object={hitGeom} attach="geometry" />
-          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
         </mesh>
         <pointLight
           ref={glowRef}

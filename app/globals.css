@@ -155,16 +155,24 @@ html {
   --swing-b: calc(var(--sb-base, 6deg) * 1.8);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee,
-  .animate-float,
-  .animate-drift,
-  .animate-slow-spin,
-  .animate-pulse-ring {
-    animation: none;
-  }
-}
-
 .marquee-pause:hover .animate-marquee {
   animation-play-state: paused;
+}
+
+/* Soft multi-hue wash so the page background is never flat cream */
+body {
+  background-image:
+    radial-gradient(1100px 520px at 8% -6%, rgba(224, 101, 63, 0.07), transparent 60%),
+    radial-gradient(1000px 600px at 105% 12%, rgba(109, 91, 208, 0.07), transparent 55%),
+    radial-gradient(900px 700px at 0% 100%, rgba(15, 118, 110, 0.06), transparent 55%),
+    radial-gradient(1000px 600px at 100% 85%, rgba(217, 79, 138, 0.06), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Tiny colored dot grid — fun, subtle texture */
+.bg-dots {
+  background-image: radial-gradient(rgba(109, 91, 208, 0.16) 1px, transparent 1.5px),
+    radial-gradient(rgba(224, 101, 63, 0.12) 1px, transparent 1.5px);
+  background-size: 26px 26px, 26px 26px;
+  background-position: 0 0, 13px 13px;
 }
