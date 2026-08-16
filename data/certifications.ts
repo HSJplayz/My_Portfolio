@@ -15,13 +15,17 @@ export const certifications = [
     name: "NXT Wave Industry Certificate",
     issuer: "NXT Wave",
   },
+  {
+    name: "Google Cloud Career Launchpad",
+    issuer: "Google",
+  },
 ];
 
 export const languages = [
   { name: "English", level: "Fluent" },
   { name: "Hindi", level: "Native" },
   { name: "Marathi", level: "Native" },
-  { name: "Japanese", level: "JLPT N5 (in progress)" },
+  { name: "Japanese", level: "JLPT N4 (in progress)" },
 ];
 
 export const activities = [

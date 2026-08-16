@@ -14,7 +14,7 @@ export const profile = {
   github: "https://github.com/HSJplayz",
   leetcode: "https://leetcode.com/u/Hrushikesh_Jagtap",
   leetcodeName: "Hrushikesh_Jagtap",
-  instagram: "https://instagram.com/hrushijagtap333",
-  instagramName: "@hrushijagtap333",
-  resume: "/HSJ_resume_v4.docx",
+  instagram: "https://instagram.com/hrushijagtap233",
+  instagramName: "@hrushijagtap233",
+  resume: "/Hrushikesh-Jagtap-Resume.docx",
 } as const;

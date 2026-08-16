@@ -13,11 +13,24 @@ Location: Akurdi, Pune, Maharashtra, India.
 - Phone: +91 74990 02102
 - GitHub: https://github.com/HSJplayz
 - LeetCode: https://leetcode.com/u/Hrushikesh_Jagtap (username Hrushikesh_Jagtap)
-- Instagram: https://instagram.com/hrushijagtap333 (@hrushijagtap333)
+- Instagram: https://instagram.com/hrushijagtap233 (@hrushijagtap233)
 - Resume download available on the Contact page.
 
 ## Summary
 Hrushikesh builds algorithmic data structure tools, full-stack platforms, and relational database applications. He is an experienced robotics Junior Engineer with hands-on expertise engineering real-time YOLO object detection models and vision pipelines.
+
+## Achievements
+- Selected participant in Smart India Hackathon (SIH) with the Carbon Footprint Tracker project.
+- Scored 98.96 percentile in MHTCET, and 82% and 81% in 10th and 12th boards respectively.
+- Core team member in college clubs and societies, and Junior Engineer on a competitive robotics team.
+
+## Career Interests & Goals
+- Deeply interested in Computer Vision (especially OpenCV), building and training ML models, and data analysis.
+- Actively strengthening Data Structures & Algorithms skills.
+- No specific target company — open to roles across software development, ML, and AI.
+
+## Ongoing Research
+- Currently researching privacy-preserving and explainable machine learning: Federated Learning, Secure Aggregation, Homomorphic Encryption, Differential Privacy, and SHAP-based Explainable AI (XAI).
 
 ## Experience
 ### Team Automatons (Robotics Team, PCCOE) — Junior Engineer (Computer Vision), 1 year
@@ -45,7 +58,7 @@ A word predictor and autocorrect system in C++ using Trie and HashMap data struc
 A Smart India Hackathon (SIH) project in Python that tracks a user's carbon footprint and shows how it impacts the environment. Integrated Google Sheets API for cloud logging, Pixela API for habit visualization, and Twilio API for SMS alerts.
 
 ### Unity 2D Game
-A 2D sandbox game built with Unity and C#, inspired by Terraria — digging, building and exploring a procedural world.
+A 2D sandbox game built with Unity and C#, inspired by Terraria — digging, building and exploring a procedural world. This is Hrushikesh's favorite project: he built it entirely on his own, and learned and worked hard to make it good.
 
 ## Technical Skills
 - Languages: C, C++, Python, Java, JavaScript, TypeScript, SQL
@@ -63,7 +76,16 @@ Pimpri Chinchwad College of Engineering (PCCOE), Pune — B.Tech in Computer Eng
 - 100 Days of Code: The Complete Python Pro Bootcamp (Udemy)
 - C++ Programming & Complete JavaScript 2025 (Udemy)
 - NXT Wave Industry Certificate
+- Google Cloud Career Launchpad (Google)
+
+## Personal & Fun Facts
+- Owns a Kawasaki Ninja 500 and loves bikes and cars.
+- Plays chess occasionally — around 1200 Elo.
+- Clash of Clans player — Town Hall 18, almost maxed.
+- Solves a Rubik's cube in about a minute.
+- Enjoys the gym, hiking and trekking; has climbed Chandra Khani Pass.
+- Scored 98.96 percentile in MHTCET, 82% in 10th, and 81% in 12th boards.
 
 ## Languages & Activities
-- Languages: English (Fluent), Hindi (Native), Marathi (Native), Japanese (JLPT N5 preparation).
+- Languages: English (Fluent), Hindi (Native), Marathi (Native), Japanese (JLPT N4, in progress).
 - Activities: Strategic chess, speed cubing, trekking. Tools: DaVinci Resolve, Filmora, CapCut, Canva.

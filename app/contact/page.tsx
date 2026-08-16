@@ -89,7 +89,7 @@ export default function ContactPage() {
               </p>
               <Link
                 href={profile.resume}
-                download
+                download="Hrushikesh Jagtap Resume.docx"
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm text-paper transition-colors hover:bg-accent"
               >
                 Download resume ↓

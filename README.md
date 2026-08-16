@@ -10,7 +10,7 @@ Includes a **Gemini-powered chat widget** that answers questions about Hrushikes
 - Minimalist typography-first cover, marquee, scroll reveals, and floating accents
 - AI chat widget (Vercel AI SDK v7 + Google Gemini)
 - Contact form delivered to your inbox via Resend
-- Resume download (`/HSJ_resume_v4.docx`)
+- Resume download (`/Hrushikesh-Jagtap-Resume.docx`)
 - Deployable to **Vercel** (primary) and **GitHub Pages** (static backup)
 
 ## Getting Started
