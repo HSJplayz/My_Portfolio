@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     description:
       "Computer Engineering student building fast algorithms, full-stack platforms, and vision-powered robots.",
     type: "website",
-    url: "https://my-portfolio-omega-gold.vercel.app",
+    url: "https://my-portfolio-kappa-teal-10.vercel.app",
   },
 };
 
