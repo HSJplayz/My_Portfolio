@@ -154,7 +154,7 @@ function Robot({ mode }: { mode: BotMode }) {
 
         {/* head */}
         <group ref={head}>
-          <RoundedBox args={[0.42, 0.32, 0.38]} radius={0.06} smoothness={4} position={[0, 0.3, 0]}>
+          <RoundedBox args={[0.42, 0.32, 0.38]} radius={0.06} smoothness={4} position={[0, 0.03, 0]}>
             <meshStandardMaterial color="#26201b" metalness={0.5} roughness={0.35} />
           </RoundedBox>
           <mesh position={[0, 0.3, 0.195]}>
@@ -162,13 +162,7 @@ function Robot({ mode }: { mode: BotMode }) {
             <meshStandardMaterial color="#12100e" roughness={0.3} metalness={0.2} />
           </mesh>
           {/* eyes + sockets */}
-          {[-0.1, 0.1].map((x) => (
-            <mesh key={x} position={[x, 0.33, 0.2]}>
-              <sphereGeometry args={[0.062, 16, 16]} />
-              <meshStandardMaterial color="#3a332b" roughness={0.4} />
-            </mesh>
-          ))}
-          <group ref={eyes}>
+          
             {[-0.1, 0.1].map((x) => (
               <mesh key={x} position={[x, 0.33, 0.205]}>
                 <sphereGeometry args={[0.036, 16, 16]} />
@@ -248,7 +242,7 @@ export function ChatBot({ mode }: { mode: BotMode }) {
       dpr={[1, 2]}
       camera={{ position: [0, 0, 2.45], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
-      style={{ pointerEvents: "none" }}
+      style={{ pointerEvents: "auto" }}
       aria-hidden
     >
       <ambientLight intensity={0.9} />

@@ -234,7 +234,7 @@ function useCodeScreen() {
   return { texture, reset };
 }
 
-type Anim = { lid: number; y: number; rise: number; code: number; glow: number; flash: number };
+type Anim = { y: number; code: number; glow: number; flash: number };
 
 function Laptop() {
   const group = useRef<THREE.Group>(null);
@@ -291,19 +291,17 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ lid: 1.2, y: -0.55, rise: 0.03, code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ y: -0.55, code: 0, glow: 0, flash: 0 });
   const powered = useRef(true);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
 
-  const apply = useCallback(() => {
+const apply = useCallback(() => {
     const a = anim.current;
     if (group.current) {
-      group.current.rotation.x = a.lid;
+      group.current.rotation.x = 0;
       group.current.position.y = a.y;
     }
-    if (panelRef.current) panelRef.current.scale.y = a.rise;
-    if (codeRef.current) codeRef.current.scale.y = a.rise;
     if (codeMat.current) {
       codeMat.current.opacity = a.code;
       const wantOpaque = a.code >= 0.999;
@@ -358,8 +356,8 @@ function Laptop() {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0 }, 0.4, () => {
-      tweenTo({ lid: 1.2, y: -0.55, rise: 0.03 }, 1.15, () => {
+    tweenTo({ code: 0, glow: 0, y: -0.12 }, 0.4, () => {
+      tweenTo({ y: 0 }, 0.3, () => {
         transitioning.current = false;
         powered.current = false;
       });
@@ -370,12 +368,10 @@ function Laptop() {
     if (transitioning.current) return;
     transitioning.current = true;
     resetTyping();
-    tweenTo({ lid: 0.06, y: 0, rise: 1 }, 1.1, () => {
+    tweenTo({ code: 1, glow: 0.55, y: 0 }, 0.8, () => {
       flashBurst(0.3, 0.7);
-      tweenTo({ code: 1, glow: 0.55 }, 0.45, () => {
-        transitioning.current = false;
-        powered.current = true;
-      });
+      transitioning.current = false;
+      powered.current = true;
     });
   }, [flashBurst, resetTyping, tweenTo]);
 
@@ -387,14 +383,14 @@ function Laptop() {
 
   useEffect(() => {
     const startedAt = tweenId.current;
-    tweenTo({ lid: 0.06, y: 0, rise: 1 }, 1.5, () => {
+    tweenTo({ y: 0 }, 1.5, () => {
       flashBurst(0.3, 0.7);
-      tweenTo({ code: 1, glow: 0.55 }, 0.5);
+      resetTyping();
     });
     return () => {
       tweenId.current = startedAt + 1;
     };
-  }, [flashBurst, tweenTo]);
+  }, [flashBurst, tweenTo, resetTyping]);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? "pointer" : "auto";
@@ -489,13 +485,11 @@ export default function HeroScene() {
       <directionalLight position={[0, 3, 6]} intensity={1.1} color="#fff0e0" />
       <pointLight position={[-2, 1.5, 3.5]} intensity={0.5} color="#d97951" />
 
-      <Rig>
-        <Float speed={1.2} rotationIntensity={0.22} floatIntensity={0.6}>
-          <Suspense fallback={null}>
-            <Laptop />
-          </Suspense>
-        </Float>
-      </Rig>
+      <Float speed={1.2} rotationIntensity={0.22} floatIntensity={0.6}>
+        <Suspense fallback={null}>
+          <Laptop />
+        </Suspense>
+      </Float>
 
       <ContactShadows position={[0, -1.35, 0]} opacity={0.32} scale={11} blur={2.8} far={5} />
       <Sparkles count={70} scale={9} size={2} speed={0.35} opacity={0.4} color="#d97951" />
