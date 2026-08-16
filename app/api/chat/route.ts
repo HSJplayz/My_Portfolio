@@ -10,10 +10,12 @@ import { getKnowledgeBase } from "@/lib/knowledge";
 
 export const runtime = "nodejs";
 
+const allowedOrigins = process.env.ALLOWED_CORS_ORIGINS?.split(",") || [];
 const CORS_ORIGINS = [
   "https://hsjplayz.github.io",
   "http://localhost:3000",
   "http://localhost:3001",
+  ...allowedOrigins,
 ];
 
 function corsHeaders(request: Request) {

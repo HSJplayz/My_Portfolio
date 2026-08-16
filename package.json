@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.44",
+    "@ai-sdk/groq": "^4.0.28",
     "@ai-sdk/react": "^4.0.69",
     "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",

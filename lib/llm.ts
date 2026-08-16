@@ -1,6 +1,7 @@
 import "server-only";
 
 import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import type { LanguageModel } from "ai";
 
 /**
@@ -17,21 +18,20 @@ export function getModel(): LanguageModel {
   const provider = process.env.LLM_PROVIDER ?? "google";
   const model = process.env.LLM_MODEL ?? "gemini-3.5-flash";
 
-  switch (provider) {
-    case "google":
-      return google(model);
-    // case "groq": {
-    //   const { groq } = await import("@ai-sdk/groq");
-    //   return groq(process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile");
-    // }
-    // case "ollama": {
-    //   const { createOllama } = await import("ollama-ai-provider");
-    //   const ollama = createOllama({ baseURL: "http://localhost:11434/api" });
-    //   return ollama(process.env.OLLAMA_MODEL ?? "llama3.2");
-    // }
-    default:
-      return google(model);
+switch (provider) {
+  case "google":
+    return google(model);
+  case "groq": {
+    return groq(process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile");
   }
+  // case "ollama": {
+  //   const { createOllama } = await import("ollama-ai-provider");
+  //   const ollama = createOllama({ baseURL: "http://localhost:11434/api" });
+  //   return ollama(process.env.OLLAMA_MODEL ?? "llama3.2");
+  // }
+  default:
+    return google(model);
+}
 }
 
 export function buildSystemPrompt(knowledge: string): string {
