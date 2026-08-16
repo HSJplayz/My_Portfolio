@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<rect width="1280" height="720" rx="16" fill="#151311"/>
+<g>
+  <circle cx="30" cy="22" r="7" fill="#ff5f57"/>
+  <circle cx="54" cy="22" r="7" fill="#febc2e"/>
+  <circle cx="78" cy="22" r="7" fill="#28c840"/>
+  <rect x="460" y="9" width="360" height="26" rx="13" fill="#211d1a"/>
+  <rect x="478" y="17" width="10" height="8" rx="2" fill="#6b6559"/>
+  <path d="M476 20v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#6b6559" stroke-width="2"/>
+  <text x="498" y="26" font-family="Consolas, Menlo, monospace" font-size="12" fill="#8a8378">localhost:8080</text>
+</g>
+<line x1="0" y1="44" x2="1280" y2="44" stroke="#211d1a" stroke-width="2"/>
+
+<rect width="1280" height="676" y="44" fill="#161310"/>
+<rect x="0" y="44" width="1280" height="36" fill="#1f1b18"/>
+<text x="80" y="68" font-family="Consolas, Menlo, monospace" font-size="13" fill="#9a9286" font-weight="400" style="">predictor.cpp — Real-Time Word Prediction Engine</text>
+<text x="80" y="90" font-family="Consolas, Menlo, monospace" font-size="16" fill="#d4d4d4" font-weight="400" style=""><tspan fill="#c586c0">string</tspan> <tspan fill="#9cdcfe">predict</tspan><tspan fill="#d4d4d4">(</tspan><tspan fill="#9cdcfe">prefix</tspan><tspan fill="#d4d4d4">) {</tspan></text><text x="80" y="126" font-family="Consolas, Menlo, monospace" font-size="16" fill="#d4d4d4" font-weight="400" style="">  <tspan fill="#c586c0">auto</tspan> <tspan fill="#9cdcfe">node</tspan> <tspan fill="#d4d4d4">= trie-&gt;find(</tspan><tspan fill="#ce9178">"pre"</tspan><tspan fill="#d4d4d4">);</tspan></text><text x="80" y="162" font-family="Consolas, Menlo, monospace" font-size="16" fill="#d4d4d4" font-weight="400" style="">  <tspan fill="#c586c0">vector</tspan><tspan fill="#d4d4d4">&lt;</tspan><tspan fill="#c586c0">string</tspan><tspan fill="#d4d4d4">&gt; sug = node-&gt;</tspan><tspan fill="#dcdcaa">rankTop</tspan><tspan fill="#d4d4d4">();</tspan></text><text x="80" y="198" font-family="Consolas, Menlo, monospace" font-size="16" fill="#d4d4d4" font-weight="400" style="">  <tspan fill="#4ec9b0">return</tspan> <tspan fill="#d4d4d4">sug;   </tspan><tspan fill="#6a9955">// O(K) lookup</tspan></text><text x="80" y="234" font-family="Consolas, Menlo, monospace" font-size="16" fill="#d4d4d4" font-weight="400" style=""><tspan fill="#d4d4d4">}</tspan></text>
+<text x="80" y="300" font-family="Consolas, Menlo, monospace" font-size="16" fill="#9a9286" font-weight="400" style="font-weight:700">$ </text>
+<text x="98" y="300" font-family="Consolas, Menlo, monospace" font-size="16" fill="#e8e2d6" font-weight="400" style="font-weight:700">pr</text>
+<rect x="128" y="288" width="9" height="19" fill="#31546e"/>
+<text x="80" y="334" font-family="Consolas, Menlo, monospace" font-size="12" fill="#6b6559" font-weight="400" style="">suggestions</text>
+<rect x="80" y="330" width="140" height="34" rx="17" fill="#31546e" stroke="none"/><text x="110" y="352" font-family="Consolas, Menlo, monospace" font-size="14" fill="#ffffff" font-weight="400" style="font-weight:600">predict</text><rect x="240" y="330" width="140" height="34" rx="17" fill="#26221d" stroke="#3a352f"/><text x="270" y="352" font-family="Consolas, Menlo, monospace" font-size="14" fill="#9a9286" font-weight="400" style="font-weight:600">prefix</text><rect x="400" y="330" width="140" height="34" rx="17" fill="#26221d" stroke="#3a352f"/><text x="430" y="352" font-family="Consolas, Menlo, monospace" font-size="14" fill="#9a9286" font-weight="400" style="font-weight:600">prune</text><rect x="560" y="330" width="140" height="34" rx="17" fill="#26221d" stroke="#3a352f"/><text x="590" y="352" font-family="Consolas, Menlo, monospace" font-size="14" fill="#9a9286" font-weight="400" style="font-weight:600">preorder</text>
+<rect x="80" y="400" width="300" height="7" rx="4" fill="#26221d" opacity="1"/>
+<rect x="80" y="414" width="250" height="7" rx="4" fill="#26221d" opacity="1"/>
+<rect x="80" y="428" width="180" height="7" rx="4" fill="#26221d" opacity="1"/>
+
+</svg>

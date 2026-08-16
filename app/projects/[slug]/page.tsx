@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import { getProject, projects } from "@/data/projects";
+import { asset } from "@/lib/asset";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -47,6 +49,18 @@ export default async function ProjectPage({ params }: Props) {
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
             {project.summary}
           </p>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="mt-8 overflow-hidden rounded-2xl border border-line bg-paper shadow-card">
+          <Image
+            src={asset(`/projects/${project.slug}.svg`)}
+            alt={`${project.name} mockup`}
+            width={1280}
+            height={720}
+            className="h-auto w-full"
+          />
         </div>
       </Reveal>
 

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<rect width="1280" height="720" rx="16" fill="#151311"/>
+<g>
+  <circle cx="30" cy="22" r="7" fill="#ff5f57"/>
+  <circle cx="54" cy="22" r="7" fill="#febc2e"/>
+  <circle cx="78" cy="22" r="7" fill="#28c840"/>
+  <rect x="460" y="9" width="360" height="26" rx="13" fill="#211d1a"/>
+  <rect x="478" y="17" width="10" height="8" rx="2" fill="#6b6559"/>
+  <path d="M476 20v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#6b6559" stroke-width="2"/>
+  <text x="498" y="26" font-family="Consolas, Menlo, monospace" font-size="12" fill="#8a8378">eco-habits.vercel.app</text>
+</g>
+<line x1="0" y1="44" x2="1280" y2="44" stroke="#211d1a" stroke-width="2"/>
+
+<rect width="1280" height="676" y="44" fill="#f4f6f9"/>
+<text x="440" y="92" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#22324a" font-weight="400" style="font-weight:700">Carbon Footprint</text>
+<text x="1000" y="92" font-family="Consolas, Menlo, monospace" font-size="14" fill="#8a8174" font-weight="400" style="">May 2026</text>
+<g>
+  <rect x="440" y="120" width="230" height="110" rx="14" fill="#ffffff" stroke="#e3e8ef"/>
+  <text x="462" y="160" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">This week</text>
+  <text x="462" y="200" font-family="Georgia, 'Times New Roman', serif" font-size="34" fill="#22324a" font-weight="600">18.4 kg</text>
+</g>
+<g>
+  <rect x="690" y="120" width="230" height="110" rx="14" fill="#ffffff" stroke="#e3e8ef"/>
+  <text x="712" y="160" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">Best day</text>
+  <text x="712" y="200" font-family="Georgia, 'Times New Roman', serif" font-size="34" fill="#4d6b3a" font-weight="600">Wed</text>
+</g>
+<g>
+  <rect x="940" y="120" width="230" height="110" rx="14" fill="#ffffff" stroke="#e3e8ef"/>
+  <text x="962" y="160" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">SMS alerts</text>
+  <rect x="962" y="182" width="54" height="24" rx="12" fill="#2e7d32" opacity="0.16"/>
+  <text x="976" y="199" font-family="Consolas, Menlo, monospace" font-size="12" fill="#2e7d32" font-weight="400" style="">ON</text>
+</g>
+<text x="440" y="275" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#22324a" font-weight="400" style="font-weight:600">Weekly footprint</text>
+
+<rect x="560" y="369.2" width="52" height="100.8" rx="8" fill="#5b6d8c"/>
+<text x="586" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">M</text>
+<rect x="650" y="338" width="52" height="132" rx="8" fill="#8ea2bf"/>
+<text x="676" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">T</text>
+<rect x="740" y="378.8" width="52" height="91.2" rx="8" fill="#5b6d8c"/>
+<text x="766" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">W</text>
+<rect x="830" y="321.20000000000005" width="52" height="148.79999999999998" rx="8" fill="#8ea2bf"/>
+<text x="856" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">T</text>
+<rect x="920" y="354.8" width="52" height="115.19999999999999" rx="8" fill="#5b6d8c"/>
+<text x="946" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">F</text>
+<rect x="1010" y="302" width="52" height="168" rx="8" fill="#8ea2bf"/>
+<text x="1036" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">S</text>
+<rect x="1100" y="330.8" width="52" height="139.2" rx="8" fill="#5b6d8c"/>
+<text x="1126" y="488" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">S</text>
+<text x="440" y="535" font-family="Consolas, Menlo, monospace" font-size="13" fill="#8a8174" font-weight="400" style="">Translated to: 3.1 km of driving · 0.9 trees to offset</text>
+<rect x="440" y="575" width="300" height="7" rx="4" fill="#d7dee7" opacity="1"/>
+<rect x="440" y="589" width="240" height="7" rx="4" fill="#d7dee7" opacity="1"/>
+
+</svg>
