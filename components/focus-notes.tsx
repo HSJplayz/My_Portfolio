@@ -7,9 +7,9 @@ const notes = [
     tag: "YOLO · OpenCV · Scikit-learn",
     description:
       "Custom object-detection pipelines, dataset curation, augmentation, and real-time vision that ships onto hardware.",
-    a: -2.6,
-    b: 1.6,
-    duration: 5.4,
+    a: -6,
+    b: 3.8,
+    duration: 4.6,
     delay: 0,
   },
   {
@@ -18,9 +18,9 @@ const notes = [
     tag: "React · Next.js · Node · SQL",
     description:
       "Algorithm-first platforms and database-backed web apps — from problem sets and submissions to recipes and ratings.",
-    a: 2.2,
-    b: -1.8,
-    duration: 6.1,
+    a: 5.2,
+    b: -4,
+    duration: 5.2,
     delay: -1.4,
   },
   {
@@ -29,9 +29,9 @@ const notes = [
     tag: "Arduino · ESP32 · Sensors",
     description:
       "Bridging vision to actuation — cameras that see, microcontrollers that decide, and arms that move.",
-    a: -1.9,
-    b: 2.4,
-    duration: 5.8,
+    a: -4.4,
+    b: 5.6,
+    duration: 4.9,
     delay: -2.8,
   },
 ];

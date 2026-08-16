@@ -78,13 +78,13 @@
 @property --swing-a {
   syntax: "<angle>";
   inherits: true;
-  initial-value: -2deg;
+  initial-value: -6deg;
 }
 
 @property --swing-b {
   syntax: "<angle>";
   inherits: true;
-  initial-value: 2deg;
+  initial-value: 6deg;
 }
 
 @keyframes swing {
@@ -132,8 +132,8 @@ html {
 
 .note-swing {
   transform-origin: top center;
-  --swing-a: var(--sa-base, -2deg);
-  --swing-b: var(--sb-base, 2deg);
+  --swing-a: var(--sa-base, -6deg);
+  --swing-b: var(--sb-base, 6deg);
   transition:
     --swing-a 0.5s ease,
     --swing-b 0.5s ease;
@@ -143,8 +143,8 @@ html {
 }
 
 .group:hover .note-swing {
-  --swing-a: calc(var(--sa-base, -2deg) * 2.4);
-  --swing-b: calc(var(--sb-base, 2deg) * 2.4);
+  --swing-a: calc(var(--sa-base, -6deg) * 1.8);
+  --swing-b: calc(var(--sb-base, 6deg) * 1.8);
 }
 
 @media (prefers-reduced-motion: reduce) {
