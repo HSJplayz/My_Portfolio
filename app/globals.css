@@ -152,8 +152,7 @@ html {
   .animate-float,
   .animate-drift,
   .animate-slow-spin,
-  .animate-pulse-ring,
-  .note-swing {
+  .animate-pulse-ring {
     animation: none;
   }
 }

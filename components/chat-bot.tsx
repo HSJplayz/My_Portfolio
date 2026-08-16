@@ -2,36 +2,13 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, RoundedBox } from "@react-three/drei";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useRef } from "react";
 import * as THREE from "three";
-
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
-}
 
 const damp = (a: number, b: number, k: number, dt: number) =>
   THREE.MathUtils.lerp(a, b, 1 - Math.pow(1 - k, dt * 60));
 
-function Robot({
-  busy,
-  hasInput,
-  reduced,
-}: {
-  busy: boolean;
-  hasInput: boolean;
-  reduced: boolean;
-}) {
+function Robot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
   const head = useRef<THREE.Group>(null);
   const bodySway = useRef<THREE.Group>(null);
   const leftArm = useRef<THREE.Group>(null);
@@ -44,31 +21,40 @@ function Robot({
   const mouth = useRef<THREE.Mesh>(null);
   const chestMat = useRef<THREE.MeshStandardMaterial>(null);
   const antennaMat = useRef<THREE.MeshStandardMaterial>(null);
+  const lastT = useRef(0);
 
-  useFrame(({ clock }, delta) => {
+  useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    if (reduced) return;
+    const dt = Math.min(Math.max(t - lastT.current, 0.016), 0.1);
+    lastT.current = t;
 
     // targets per state
     const mode = busy ? "busy" : hasInput ? "typing" : "idle";
-    const headX = mode === "typing" ? 0.22 : mode === "busy" ? -0.1 : 0;
+    const headX = mode === "typing" ? 0.22 : mode === "busy" ? -0.1 : 0.03;
+    const headY = Math.sin(t * 0.7) * (mode === "busy" ? 0.1 : 0.3);
     const headZ = Math.sin(t * 0.6) * 0.05;
     const pupilY = mode === "typing" ? -0.012 : mode === "busy" ? 0.006 : 0;
-    const pupilX = busy ? Math.sin(t * 2.2) * 0.012 : Math.sin(t * 0.45) * 0.015;
+    const pupilX = busy ? Math.sin(t * 2.2) * 0.012 : Math.sin(t * 0.45) * 0.016;
     const armBusy = mode === "busy" ? 1 : 0;
     const browFurrow = mode === "busy" ? 1 : 0;
 
+    // blink: quick closure every ~3s (faster while busy)
+    const blinkPeriod = busy ? 1.3 : 3.1;
+    const blinkPhase = t % blinkPeriod;
+    const blink = blinkPhase < 0.16 ? 0.08 : 1;
+
     if (head.current) {
-      head.current.rotation.x = damp(head.current.rotation.x, headX, 0.08, delta) + (mode === "busy" ? Math.sin(t * 5) * 0.03 : 0);
-      head.current.rotation.z = damp(head.current.rotation.z, headZ, 0.08, delta);
+      head.current.rotation.x = damp(head.current.rotation.x, headX, 0.08, dt) + (mode === "busy" ? Math.sin(t * 5) * 0.05 : 0);
+      head.current.rotation.y = damp(head.current.rotation.y, headY, 0.08, dt);
+      head.current.rotation.z = damp(head.current.rotation.z, headZ, 0.08, dt);
     }
     if (bodySway.current) {
-      bodySway.current.rotation.z = damp(bodySway.current.rotation.z, busy ? Math.sin(t * 4) * 0.04 : Math.sin(t * 0.8) * 0.02, 0.06, delta);
+      bodySway.current.rotation.z = damp(bodySway.current.rotation.z, busy ? Math.sin(t * 4) * 0.05 : Math.sin(t * 0.9) * 0.03, 0.06, dt);
     }
     if (leftArm.current)
-      leftArm.current.rotation.x = damp(leftArm.current.rotation.x, -0.05 - armBusy * 1.15, 0.08, delta) + (busy ? Math.sin(t * 6) * 0.12 : 0);
+      leftArm.current.rotation.x = damp(leftArm.current.rotation.x, -0.05 - armBusy * 1.2, 0.08, dt) + Math.sin(t * (busy ? 6 : 1.1)) * (busy ? 0.14 : 0.09);
     if (rightArm.current)
-      rightArm.current.rotation.x = damp(rightArm.current.rotation.x, -0.05 + armBusy * 0.35, 0.08, delta) + (busy ? Math.sin(t * 6 + 1.2) * 0.1 : 0);
+      rightArm.current.rotation.x = damp(rightArm.current.rotation.x, -0.05 + armBusy * 0.4, 0.08, dt) + Math.sin(t * (busy ? 6 : 1.1) + 1.4) * (busy ? 0.12 : 0.09);
     if (leftPupil.current) {
       leftPupil.current.position.x = pupilX;
       leftPupil.current.position.y = pupilY;
@@ -77,21 +63,18 @@ function Robot({
       rightPupil.current.position.x = pupilX;
       rightPupil.current.position.y = pupilY;
     }
-    if (eyes.current) {
-      const blink = busy ? Math.max(0.05, Math.abs(Math.sin(t * 5))) : 0.82 + 0.18 * Math.sin(t * 1.4);
-      eyes.current.scale.y = damp(eyes.current.scale.y, blink, 0.4, delta);
-    }
-    if (leftBrow.current) leftBrow.current.rotation.z = damp(leftBrow.current.rotation.z, 0.22 * browFurrow, 0.1, delta);
-    if (rightBrow.current) rightBrow.current.rotation.z = damp(rightBrow.current.rotation.z, -0.22 * browFurrow, 0.1, delta);
-    if (mouth.current) mouth.current.scale.x = damp(mouth.current.scale.x, busy ? 0.6 + 0.4 * Math.abs(Math.sin(t * 7)) : 0.6, 0.12, delta);
+    if (eyes.current) eyes.current.scale.y = damp(eyes.current.scale.y, blink, 0.5, dt);
+    if (leftBrow.current) leftBrow.current.rotation.z = damp(leftBrow.current.rotation.z, 0.24 * browFurrow, 0.1, dt);
+    if (rightBrow.current) rightBrow.current.rotation.z = damp(rightBrow.current.rotation.z, -0.24 * browFurrow, 0.1, dt);
+    if (mouth.current) mouth.current.scale.x = damp(mouth.current.scale.x, busy ? 0.55 + 0.45 * Math.abs(Math.sin(t * 7)) : 0.6, 0.12, dt);
     if (chestMat.current)
-      chestMat.current.emissiveIntensity = busy ? 1.7 + 0.7 * Math.sin(t * 8) : 0.9 + 0.15 * Math.sin(t * 1.2);
+      chestMat.current.emissiveIntensity = busy ? 1.8 + 0.8 * Math.sin(t * 8) : 0.9 + 0.25 * Math.sin(t * 2);
     if (antennaMat.current)
-      antennaMat.current.emissiveIntensity = busy ? 3 + Math.sin(t * 10) : 1.6 + 0.3 * Math.sin(t * 1.6);
+      antennaMat.current.emissiveIntensity = busy ? 3 + Math.sin(t * 10) : 1.6 + 0.4 * Math.sin(t * 2.2);
   });
 
   return (
-    <Float speed={reduced ? 0 : 2} rotationIntensity={0.3} floatIntensity={0.4}>
+    <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
       <group ref={bodySway}>
         {/* antenna */}
         <mesh position={[0, 0.52, 0]}>
@@ -194,7 +177,6 @@ function Robot({
 }
 
 export function ChatBot({ busy, hasInput }: { busy: boolean; hasInput: boolean }) {
-  const reduced = useReducedMotion();
   return (
     <Canvas
       dpr={[1, 2]}
@@ -207,7 +189,7 @@ export function ChatBot({ busy, hasInput }: { busy: boolean; hasInput: boolean }
       <directionalLight position={[2, 3, 3]} intensity={1.6} color="#ffe8d0" />
       <directionalLight position={[-2, -1, 2]} intensity={0.5} color="#d97951" />
       <Suspense fallback={null}>
-        <Robot busy={busy} hasInput={hasInput} reduced={reduced} />
+        <Robot busy={busy} hasInput={hasInput} />
       </Suspense>
     </Canvas>
   );

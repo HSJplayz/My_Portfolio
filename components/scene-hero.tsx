@@ -5,7 +5,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, Float, Sparkles, useGLTF } from "@react-three/drei";
-import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useMemo, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { asset } from "@/lib/asset";
 
@@ -73,34 +73,17 @@ const TABS = [
 let targetX = 0;
 let targetY = 0;
 
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
-}
-
 function Rig({ children }: { children: ReactNode }) {
   const ref = useRef<THREE.Group>(null);
-  const reduced = useReducedMotion();
 
   useEffect(() => {
-    if (reduced) return;
     const onMove = (e: PointerEvent) => {
       targetX = e.clientX / window.innerWidth - 0.5;
       targetY = e.clientY / window.innerHeight - 0.5;
     };
     window.addEventListener("pointermove", onMove);
     return () => window.removeEventListener("pointermove", onMove);
-  }, [reduced]);
+  }, []);
 
   useFrame(() => {
     if (!ref.current) return;
@@ -190,8 +173,8 @@ function drawCode(
   }
 }
 
-function useCodeScreen(openRef: React.RefObject<boolean>, reduced: boolean) {
-  const state = useRef({ tab: 0, chars: 0, cursor: true, holdUntil: 0 });
+function useCodeScreen() {
+  const state = useRef({ tab: 0, chars: 0, cursor: true, startAt: 0, holdUntil: Infinity });
 
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
@@ -212,27 +195,26 @@ function useCodeScreen(openRef: React.RefObject<boolean>, reduced: boolean) {
     };
   }, [texture]);
 
-  useFrame(({ clock }, delta) => {
+  useFrame(({ clock }) => {
     const tex = textureRef.current;
     if (!tex) return;
-    if (!openRef.current && !reduced) {
-      return;
-    }
     const s = state.current;
-    if (reduced) {
-      const total = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
-      s.chars = total;
+    const t = clock.getElapsedTime();
+    const rate = 60;
+    const total = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
+    if (t < s.startAt + total / rate) {
+      s.chars = Math.floor((t - s.startAt) * rate);
     } else {
-      const total = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
-      if (s.chars < total) {
-        s.chars = Math.min(total, s.chars + 60 * delta);
-      } else if (clock.elapsedTime >= s.holdUntil) {
+      s.chars = total;
+      if (t >= s.holdUntil) {
         s.tab = (s.tab + 1) % TABS.length;
+        const nextTotal = TABS[s.tab].lines.reduce((a, l) => a + (l[0] ? l[0].length : 1) + 1, 0);
+        s.startAt = t;
+        s.holdUntil = t + nextTotal / rate + 2.6;
         s.chars = 0;
-        s.holdUntil = clock.elapsedTime + 2.6;
       }
     }
-    s.cursor = Math.floor(clock.elapsedTime * 1.6) % 2 === 0;
+    s.cursor = Math.floor(t * 1.6) % 2 === 0;
     const ctx = (tex.image as HTMLCanvasElement).getContext("2d");
     if (ctx) drawCode(ctx, s.tab, Math.floor(s.chars), s.cursor);
     tex.needsUpdate = true;
@@ -242,7 +224,6 @@ function useCodeScreen(openRef: React.RefObject<boolean>, reduced: boolean) {
 }
 
 function Laptop() {
-  const reduced = useReducedMotion();
   const group = useRef<THREE.Group>(null);
   const panelRef = useRef<THREE.Mesh>(null);
   const codeRef = useRef<THREE.Mesh>(null);
@@ -250,7 +231,6 @@ function Laptop() {
   const codeMat = useRef<THREE.MeshBasicMaterial>(null);
   const flashMat = useRef<THREE.MeshBasicMaterial>(null);
   const glowRef = useRef<THREE.PointLight>(null);
-  const openRef = useRef(false);
 
   const { scene } = useGLTF(asset("/models/laptop.glb"));
 
@@ -299,29 +279,19 @@ function Laptop() {
     []
   );
 
-  const codeTexture = useCodeScreen(openRef, reduced);
+  const codeTexture = useCodeScreen();
 
   useEffect(() => {
     const g = group.current;
     if (!g) return;
-    if (reduced) {
-      g.rotation.x = 0.06;
-      g.position.y = 0;
-      if (panelRef.current) panelRef.current.scale.y = 1;
-      if (codeRef.current) codeRef.current.scale.y = 1;
-      if (codeMat.current) codeMat.current.opacity = 1;
-      if (glowRef.current) glowRef.current.intensity = 0.55;
-      openRef.current = true;
-      return;
-    }
     const start = performance.now();
     let raf = 0;
     const step = (now: number) => {
       const t = (now - start) / 1000;
       const openT = THREE.MathUtils.clamp((t - 0.3) / 1.5, 0, 1);
       const eased = 1 - Math.pow(1 - openT, 3);
-      g.rotation.x = THREE.MathUtils.lerp(1.05, 0.06, eased);
-      g.position.y = THREE.MathUtils.lerp(-0.5, 0, eased);
+      g.rotation.x = THREE.MathUtils.lerp(1.2, 0.06, eased);
+      g.position.y = THREE.MathUtils.lerp(-0.55, 0, eased);
       const rise = THREE.MathUtils.clamp((openT - 0.35) / 0.5, 0, 1);
       const riseEased = 1 - Math.pow(1 - rise, 2);
       if (panelRef.current) panelRef.current.scale.y = THREE.MathUtils.lerp(0.03, 1, riseEased);
@@ -333,15 +303,12 @@ function Laptop() {
       if (glowRef.current) glowRef.current.intensity = 0.55 + flash * 1.3;
       if (codeMat.current)
         codeMat.current.opacity = Math.min(1, THREE.MathUtils.clamp((openT - 0.6) / 0.4, 0, 1) + flash * 0.2);
-      if (openT >= 1) {
-        openRef.current = true;
-        return;
-      }
+      if (openT >= 1) return;
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [reduced]);
+  }, []);
 
   useEffect(() => () => {
     panelGeom.dispose();
@@ -350,8 +317,8 @@ function Laptop() {
   }, [panelGeom, codeGeom, flashGeom]);
 
   return (
-    <group rotation={[0.06, -0.58, 0]} position={[0.15, 0.25, 0]}>
-      <group ref={group} rotation={[1.05, 0, 0]}>
+    <group rotation={[0.04, -0.85, 0]} position={[0.6, -0.15, 0]}>
+      <group ref={group} rotation={[1.2, 0, 0]}>
         <primitive object={model} />
         <mesh ref={panelRef} position={screenCenter.clone().addScaledVector(screenUp, -PANEL_H / 2)} quaternion={screenQuat} scale={[1, 0.03, 1]}>
           <primitive object={panelGeom} attach="geometry" />
@@ -399,8 +366,6 @@ function Laptop() {
 }
 
 export default function HeroScene() {
-  const reduced = useReducedMotion();
-
   return (
     <Canvas
       dpr={[1, 1.75]}
@@ -416,7 +381,7 @@ export default function HeroScene() {
       <pointLight position={[-2, 1.5, 3.5]} intensity={0.5} color="#d97951" />
 
       <Rig>
-        <Float speed={reduced ? 0 : 1.2} rotationIntensity={0.22} floatIntensity={0.6}>
+        <Float speed={1.2} rotationIntensity={0.22} floatIntensity={0.6}>
           <Suspense fallback={null}>
             <Laptop />
           </Suspense>
@@ -424,7 +389,7 @@ export default function HeroScene() {
       </Rig>
 
       <ContactShadows position={[0, -1.35, 0]} opacity={0.32} scale={11} blur={2.8} far={5} />
-      <Sparkles count={70} scale={9} size={2} speed={reduced ? 0 : 0.35} opacity={0.4} color="#d97951" />
+      <Sparkles count={70} scale={9} size={2} speed={0.35} opacity={0.4} color="#d97951" />
     </Canvas>
   );
 }
