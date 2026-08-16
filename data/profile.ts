@@ -1,0 +1,18 @@
+export const profile = {
+  name: "Hrushikesh Jagtap",
+  firstName: "Hrushikesh",
+  role: "B.Tech Computer Engineering Student · Software, ML & Computer Vision",
+  tagline: "Computer Engineering student building fast algorithms, full-stack platforms, and robots that see.",
+  bio: [
+    "Third-year B.Tech Computer Engineering student at PCCOE Pune, specializing in Software Development, Machine Learning, and Computer Vision.",
+    "I build algorithmic data structure tools, full-stack platforms, and relational database applications. As a robotics Junior Engineer at Team Automatons, I trained custom YOLO object detection models and integrated real-time vision pipelines with embedded hardware for competitive robotics.",
+  ],
+  email: "hrushijagtap333@gmail.com",
+  collegeEmail: "hrushikesh.jagtap24@pccoepune.org",
+  phone: "+91 74990 02102",
+  location: "Akurdi, Pune, MH, India",
+  github: "https://github.com/HSJplayz",
+  leetcode: "https://leetcode.com/u/Hrushikesh_Jagtap",
+  leetcodeName: "Hrushikesh_Jagtap",
+  resume: "/HSJ_resume_v4.docx",
+} as const;
