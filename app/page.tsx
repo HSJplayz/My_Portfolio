@@ -72,7 +72,7 @@ export default function Home() {
             >
               {profile.name.split(" ")[0]}
               <br />
-              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text py-px italic text-transparent">
                 {profile.name.split(" ").slice(1).join(" ")}
               </span>
             </motion.h1>
@@ -211,7 +211,7 @@ export default function Home() {
             <p className="mb-3 font-mono text-sm text-teal">( About )</p>
             <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
               Engineer. Builder.{" "}
-              <span className="bg-gradient-to-r from-teal via-lavender to-violet bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-teal via-lavender to-violet bg-clip-text py-px italic text-transparent">
                 Roboticist.
               </span>
             </h2>
@@ -245,7 +245,7 @@ export default function Home() {
             <p className="mb-4 font-mono text-sm text-rose">( Contact )</p>
               <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold leading-tight tracking-tight text-ink sm:text-6xl">
               Have an idea?{" "}
-              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text py-px italic text-transparent">
                 Let&apos;s build it.
               </span>
             </h2>
