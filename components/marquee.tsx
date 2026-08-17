@@ -10,7 +10,7 @@ const dotColors = [
 export function Marquee({ items }: { items: string[] }) {
   const doubled = [...items, ...items];
   return (
-    <div className="marquee-pause relative overflow-hidden border-y border-line bg-gradient-to-r from-coral/10 via-violet/10 to-teal/10 py-4 [transform:rotate(-1deg)]">
+    <div className="marquee-pause relative overflow-hidden border-y border-line bg-gradient-to-r from-coral/10 via-violet/10 to-teal/10 py-4">
       <div className="flex w-max animate-marquee gap-3 whitespace-nowrap">
         {doubled.map((item, i) => (
           <span
