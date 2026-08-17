@@ -5,9 +5,8 @@ import {
   useScroll,
   useTransform,
   useInView,
-  type MotionValue,
 } from "motion/react";
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useRef, useState, useEffect, useCallback, type ReactNode } from "react";
 import type { TimelineItem } from "@/data/experience";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -19,35 +18,33 @@ export type RoadmapItem = TimelineItem & {
 /* ── SVG Winding Path ────────────────────────────────────── */
 
 function WindingPath({
-  nodeYPositions,
-  totalHeight,
+  positions,
   pathDrawn,
 }: {
-  nodeYPositions: number[];
-  totalHeight: number;
-  pathDrawn: MotionValue<number>;
+  positions: { x: number; y: number }[];
+  pathDrawn: ReturnType<typeof useTransform<number, number>>;
 }) {
-  if (totalHeight === 0 || nodeYPositions.length === 0) return null;
+  if (positions.length === 0) return null;
 
-  const cx = 50;
-  const sway = 16;
+  const svgW = positions[0].x * 2;
+  const svgH = positions[positions.length - 1].y + 80;
+  const sway = svgW * 0.09;
 
-  let d = `M ${cx} 0`;
-  for (let i = 0; i < nodeYPositions.length; i++) {
-    const y = nodeYPositions[i];
-    const prevY = i === 0 ? 0 : nodeYPositions[i - 1];
+  let d = `M ${positions[0].x} 0`;
+  for (let i = 0; i < positions.length; i++) {
+    const { x, y } = positions[i];
+    const prevY = i === 0 ? 0 : positions[i - 1].y;
     const midY = (prevY + y) / 2;
     const dx = i % 2 === 0 ? -sway : sway;
-    d += ` C ${cx + dx} ${midY}, ${cx + dx} ${midY}, ${cx} ${y}`;
+    d += ` C ${x + dx} ${midY}, ${x + dx} ${midY}, ${x} ${y}`;
   }
-  d += ` L ${cx} ${totalHeight}`;
+  d += ` L ${positions[0].x} ${svgH}`;
 
   return (
     <svg
-      className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2"
-      viewBox={`0 0 100 ${totalHeight}`}
+      className="pointer-events-none absolute inset-0 h-full w-full"
+      viewBox={`0 0 ${svgW} ${svgH}`}
       preserveAspectRatio="none"
-      style={{ width: 64, height: totalHeight }}
       aria-hidden
     >
       <motion.path
@@ -64,7 +61,7 @@ function WindingPath({
         stroke="var(--color-accent)"
         strokeWidth={2.5}
         strokeLinecap="round"
-        strokeOpacity={0.15}
+        strokeOpacity={0.12}
         style={{ pathLength: pathDrawn }}
       />
     </svg>
@@ -80,7 +77,7 @@ function TimelineNode({ type }: { type?: "education" | "experience" }) {
   return (
     <motion.div
       ref={ref}
-      className="relative z-10 flex h-6 w-6 items-center justify-center"
+      className="relative z-10 flex h-7 w-7 items-center justify-center"
       initial={{ scale: 0, opacity: 0 }}
       animate={inView ? { scale: 1, opacity: 1 } : {}}
       transition={{
@@ -90,7 +87,6 @@ function TimelineNode({ type }: { type?: "education" | "experience" }) {
         delay: 0.1,
       }}
     >
-      {/* pulse ring */}
       <motion.div
         className="absolute inset-0 rounded-full bg-accent/20"
         animate={
@@ -100,9 +96,8 @@ function TimelineNode({ type }: { type?: "education" | "experience" }) {
         }
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* core */}
       <div
-        className={`h-3.5 w-3.5 rounded-full border-[2.5px] ${
+        className={`h-4 w-4 rounded-full border-[2.5px] ${
           type === "education"
             ? "border-teal bg-cream"
             : "border-accent bg-cream"
@@ -170,7 +165,7 @@ function TimelineCard({
   );
 }
 
-/* ── Road‑start / Road‑end markers ───────────────────────── */
+/* ── Road markers ────────────────────────────────────────── */
 
 function RoadMarker({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -198,33 +193,31 @@ export default function WindingTimeline({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [nodeYPositions, setNodeYPositions] = useState<number[]>([]);
-  const [totalHeight, setTotalHeight] = useState(0);
+  const [positions, setPositions] = useState<{ x: number; y: number }[]>([]);
 
-  /* Measure card positions after layout */
-  useEffect(() => {
+  const measure = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
+    const cRect = container.getBoundingClientRect();
 
-    const measure = () => {
-      const containerRect = container.getBoundingClientRect();
-      const positions = rowRefs.current.map((row) => {
-        if (!row) return 0;
-        const r = row.getBoundingClientRect();
-        return r.top - containerRect.top + r.height / 2;
-      });
-      setNodeYPositions(positions);
-      setTotalHeight(container.scrollHeight);
-    };
+    const newPos = rowRefs.current.map((row) => {
+      if (!row) return { x: cRect.width / 2, y: 0 };
+      const r = row.getBoundingClientRect();
+      return {
+        x: cRect.width / 2,
+        y: r.top - cRect.top + r.height / 2,
+      };
+    });
+    setPositions(newPos);
+  }, []);
 
+  useEffect(() => {
     measure();
-
     const ro = new ResizeObserver(measure);
-    ro.observe(container);
+    if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, [items.length]);
+  }, [measure, items.length]);
 
-  /* Scroll-linked path drawing */
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 85%", "end 25%"],
@@ -233,12 +226,8 @@ export default function WindingTimeline({
 
   return (
     <div ref={containerRef} className="relative mx-auto max-w-4xl">
-      {/* Winding SVG path */}
-      <WindingPath
-        nodeYPositions={nodeYPositions}
-        totalHeight={totalHeight}
-        pathDrawn={pathDrawn}
-      />
+      {/* Winding SVG path — full-width overlay */}
+      <WindingPath positions={positions} pathDrawn={pathDrawn} />
 
       {/* Road start marker */}
       <RoadMarker>
@@ -249,7 +238,7 @@ export default function WindingTimeline({
       </RoadMarker>
 
       {/* Timeline rows */}
-      <div className="relative mt-4 space-y-5">
+      <div className="relative mt-4 space-y-6">
         {items.map((item, i) => {
           const isLeft = i % 2 === 0;
           return (
@@ -262,19 +251,19 @@ export default function WindingTimeline({
             >
               {/* Left content */}
               <div
-                className={`w-1/2 ${isLeft ? "flex justify-end pr-7" : ""}`}
+                className={`w-1/2 ${isLeft ? "flex justify-end pr-8" : ""}`}
               >
                 {isLeft && <TimelineCard item={item} side="left" />}
               </div>
 
-              {/* Center node */}
+              {/* Center node — measured for path */}
               <div className="relative z-10 flex w-0 flex-shrink-0 justify-center">
                 <TimelineNode type={item.type} />
               </div>
 
               {/* Right content */}
               <div
-                className={`w-1/2 ${!isLeft ? "flex justify-start pl-7" : ""}`}
+                className={`w-1/2 ${!isLeft ? "flex justify-start pl-8" : ""}`}
               >
                 {!isLeft && <TimelineCard item={item} side="right" />}
               </div>
@@ -285,7 +274,7 @@ export default function WindingTimeline({
 
       {/* Road end marker */}
       <RoadMarker>
-        <div className="mt-4 flex items-center gap-2 rounded-full bg-cream-2 px-4 py-1.5 font-mono text-xs text-muted">
+        <div className="mt-6 flex items-center gap-2 rounded-full bg-cream-2 px-4 py-1.5 font-mono text-xs text-muted">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-teal" />
           Still building…
         </div>
