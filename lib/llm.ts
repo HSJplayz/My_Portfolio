@@ -1,30 +1,51 @@
 import "server-only";
 
+import { google } from "@ai-sdk/google";
 import { groq } from "@ai-sdk/groq";
 import type { LanguageModel } from "ai";
 
-/**
- * Groq-only provider (Google quota exhausted).
- * Uses Groq Llama 3.3 70B (30 RPM free tier).
- */
-
 let cachedModel: LanguageModel | null = null;
 
-function createGroqModel(model: string): LanguageModel {
-  const apiKey = process.env.GROQ_API_KEY;
-  return groq(model, apiKey ? { apiKey } : undefined);
-}
-
 export function getModel(): LanguageModel {
-  if (cachedModel) {
+  if (cachedModel) return cachedModel;
+
+  const provider = (process.env.LLM_PROVIDER ?? "google") as
+    | "google"
+    | "groq";
+
+  if (provider === "groq") {
+    const key = process.env.GROQ_API_KEY;
+    const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
+    if (!key) throw new Error("GROQ_API_KEY is not set");
+    cachedModel = groq(model, { apiKey: key });
     return cachedModel;
   }
 
-  const modelName = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
-  const groqModel = createGroqModel(modelName);
-  console.log("[LLM] Using Groq:", modelName);
-  cachedModel = groqModel;
-  return groqModel;
+  const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  const model = process.env.LLM_MODEL ?? "gemini-2.0-flash";
+  if (!key) throw new Error("GOOGLE_GENERATIVE_AI_API_KEY is not set");
+  cachedModel = google(model, { apiKey: key });
+  return cachedModel;
+}
+
+export async function getModelWithFallback(): Promise<LanguageModel> {
+  try {
+    return getModel();
+  } catch {
+    const provider = process.env.LLM_PROVIDER ?? "google";
+    if (provider === "google") {
+      const key = process.env.GROQ_API_KEY;
+      if (!key) throw new Error("Both Google and Groq API keys are missing");
+      const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
+      cachedModel = groq(model, { apiKey: key });
+      return cachedModel;
+    }
+    const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!key) throw new Error("Both Groq and Google API keys are missing");
+    const model = process.env.LLM_MODEL ?? "gemini-2.0-flash";
+    cachedModel = google(model, { apiKey: key });
+    return cachedModel;
+  }
 }
 
 export function buildSystemPrompt(knowledge: string): string {

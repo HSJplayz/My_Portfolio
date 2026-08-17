@@ -5,24 +5,15 @@ import {
   createUIMessageStreamResponse,
   toUIMessageStream,
 } from "ai";
-import { getModel, buildSystemPrompt } from "@/lib/llm";
+import { getModelWithFallback, buildSystemPrompt } from "@/lib/llm";
 import { getKnowledgeBase } from "@/lib/knowledge";
 
 export const runtime = "nodejs";
 
-const allowedOrigins = process.env.ALLOWED_CORS_ORIGINS?.split(",") || [];
-const CORS_ORIGINS = [
-  "https://hsjplayz.github.io",
-  "http://localhost:3000",
-  "http://localhost:3001",
-  ...allowedOrigins,
-];
-
 function corsHeaders(request: Request) {
   const origin = request.headers.get("origin") ?? "";
-  const allow = CORS_ORIGINS.includes(origin) ? origin : "";
   return {
-    "Access-Control-Allow-Origin": allow || "null",
+    "Access-Control-Allow-Origin": origin || "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
@@ -46,7 +37,7 @@ export async function POST(request: Request) {
 
     const knowledge = await getKnowledgeBase();
     const system = buildSystemPrompt(knowledge);
-    const model = getModel();
+    const model = await getModelWithFallback();
 
     const result = streamText({
       model,
@@ -65,8 +56,10 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error("Chat error:", error);
+    const message =
+      error instanceof Error ? error.message : "Unknown error";
     return Response.json(
-      { error: "Something went wrong processing your message." },
+      { error: message },
       { status: 500, headers: corsHeaders(request) },
     );
   }
