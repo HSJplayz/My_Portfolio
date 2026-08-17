@@ -17,14 +17,14 @@ export function getModel(): LanguageModel {
     const key = process.env.GROQ_API_KEY;
     const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
     if (!key) throw new Error("GROQ_API_KEY is not set");
-    cachedModel = groq(model, { apiKey: key });
+    cachedModel = groq(model);
     return cachedModel;
   }
 
   const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   const model = process.env.LLM_MODEL ?? "gemini-2.0-flash";
   if (!key) throw new Error("GOOGLE_GENERATIVE_AI_API_KEY is not set");
-  cachedModel = google(model, { apiKey: key });
+  cachedModel = google(model);
   return cachedModel;
 }
 
@@ -37,13 +37,13 @@ export async function getModelWithFallback(): Promise<LanguageModel> {
       const key = process.env.GROQ_API_KEY;
       if (!key) throw new Error("Both Google and Groq API keys are missing");
       const model = process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile";
-      cachedModel = groq(model, { apiKey: key });
+      cachedModel = groq(model);
       return cachedModel;
     }
     const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!key) throw new Error("Both Groq and Google API keys are missing");
     const model = process.env.LLM_MODEL ?? "gemini-2.0-flash";
-    cachedModel = google(model, { apiKey: key });
+    cachedModel = google(model);
     return cachedModel;
   }
 }

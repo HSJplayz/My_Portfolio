@@ -234,7 +234,7 @@ function useCodeScreen() {
   return { texture, reset };
 }
 
-type Anim = { y: number; code: number; glow: number; flash: number };
+type Anim = { tilt: number; code: number; glow: number; flash: number };
 
 function Laptop() {
   const group = useRef<THREE.Group>(null);
@@ -291,7 +291,7 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ y: -0.55, code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ tilt: 0, code: 0, glow: 0, flash: 0 });
   const powered = useRef(true);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
@@ -299,8 +299,7 @@ function Laptop() {
 const apply = useCallback(() => {
     const a = anim.current;
     if (group.current) {
-      group.current.rotation.x = 0;
-      group.current.position.y = a.y;
+      group.current.rotation.x = a.tilt;
     }
     if (codeMat.current) {
       codeMat.current.opacity = a.code;
@@ -356,11 +355,9 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0, y: -0.12 }, 0.4, () => {
-      tweenTo({ y: 0 }, 0.3, () => {
-        transitioning.current = false;
-        powered.current = false;
-      });
+    tweenTo({ code: 0, glow: 0, tilt: -0.35 }, 0.5, () => {
+      transitioning.current = false;
+      powered.current = false;
     });
   }, [flashBurst, tweenTo]);
 
@@ -368,7 +365,7 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     resetTyping();
-    tweenTo({ code: 1, glow: 0.55, y: 0 }, 0.8, () => {
+    tweenTo({ tilt: 0, code: 1, glow: 0.55 }, 0.6, () => {
       flashBurst(0.3, 0.7);
       transitioning.current = false;
       powered.current = true;
@@ -383,7 +380,7 @@ const apply = useCallback(() => {
 
   useEffect(() => {
     const startedAt = tweenId.current;
-    tweenTo({ y: 0 }, 1.5, () => {
+    tweenTo({ tilt: 0 }, 1.5, () => {
       flashBurst(0.3, 0.7);
       resetTyping();
     });

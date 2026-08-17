@@ -1,14 +1,30 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, RoundedBox } from "@react-three/drei";
-import { Suspense, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
 
 const damp = (a: number, b: number, k: number, dt: number) =>
   THREE.MathUtils.lerp(a, b, 1 - Math.pow(1 - k, dt * 60));
 
 export type BotMode = "idle" | "typing" | "thinking" | "speaking";
+
+let pointerX = 0;
+let pointerY = 0;
+
+function PointerTracker() {
+  const { size } = useThree();
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      pointerX = (e.clientX / size.width - 0.5) * 2;
+      pointerY = (e.clientY / size.height - 0.5) * 2;
+    };
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [size]);
+  return null;
+}
 
 function Robot({ mode }: { mode: BotMode }) {
   const head = useRef<THREE.Group>(null);
@@ -35,19 +51,19 @@ function Robot({ mode }: { mode: BotMode }) {
     const speaking = mode === "speaking";
     const typing = mode === "typing";
 
-    // look targets per mode
-    const headYTarget = typing ? -0.4 : thinking ? 0.42 : speaking ? Math.sin(t * 1.1) * 0.18 : Math.sin(t * 0.7) * 0.25;
-    const headXTarget = typing ? -0.24 : thinking ? 0.32 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.04 : 0.03 + Math.sin(t * 0.5) * 0.02;
+    const lookX = pointerX * 0.12;
+    const lookY = -pointerY * 0.08;
+
+    const headYTarget = (typing ? -0.4 : thinking ? 0.42 : speaking ? Math.sin(t * 1.1) * 0.18 : Math.sin(t * 0.7) * 0.25) + lookX;
+    const headXTarget = (typing ? -0.24 : thinking ? 0.32 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.04 : 0.03 + Math.sin(t * 0.5) * 0.02) + lookY;
     const headZTarget = typing ? 0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.6) * 0.04 : Math.sin(t * 0.6) * 0.05;
 
-    const pupilXTarget = typing ? -0.022 : thinking ? 0.02 : speaking ? Math.sin(t * 2.6) * 0.014 : Math.sin(t * 0.45) * 0.016;
-    const pupilYTarget = typing ? -0.016 : thinking ? 0.015 : 0;
+    const pupilXTarget = (typing ? -0.022 : thinking ? 0.02 : speaking ? Math.sin(t * 2.6) * 0.014 : Math.sin(t * 0.45) * 0.016) + lookX * 0.15;
+    const pupilYTarget = (typing ? -0.016 : thinking ? 0.015 : 0) + lookY * 0.1;
 
-    // brows
     const browLTarget = typing ? 0.16 : thinking ? -0.3 : 0;
     const browRTarget = typing ? 0.16 : thinking ? 0.3 : 0;
 
-    // mouth: idle smile / typing neutral / thinking hmm / speaking talk
     const mouthScale = speaking
       ? 0.55 + 0.5 * Math.abs(Math.sin(t * 7))
       : thinking
@@ -56,7 +72,6 @@ function Robot({ mode }: { mode: BotMode }) {
           ? 0.52
           : 0.6 + 0.04 * Math.sin(t * 1.2);
 
-    // arms
     const armLTarget = thinking
       ? -1.35 + Math.sin(t * 0.9) * 0.04
       : speaking
@@ -78,11 +93,9 @@ function Robot({ mode }: { mode: BotMode }) {
         ? Math.sin(t * 2.4) * 0.04
         : Math.sin(t * (typing ? 1.4 : 0.9)) * 0.03;
 
-    // blink
     const blinkPeriod = speaking ? 1.8 : typing ? 2.6 : thinking ? 4.5 : 3.1;
     const blink = t % blinkPeriod < 0.16 ? 0.08 : 1;
 
-    // glow pulse
     const chest = speaking
       ? 1.7 + 0.7 * Math.sin(t * 8)
       : thinking
@@ -121,7 +134,6 @@ function Robot({ mode }: { mode: BotMode }) {
     if (chestMat.current) chestMat.current.emissiveIntensity = chest;
     if (antennaMat.current) antennaMat.current.emissiveIntensity = antenna;
 
-    // thinking bubble dots
     dots.forEach((d, i) => {
       if (!d.current) return;
       const s = thinking ? 0.55 + 0.45 * Math.sin(t * 5 - i * 0.9) : 0;
@@ -152,41 +164,44 @@ function Robot({ mode }: { mode: BotMode }) {
           ))}
         </group>
 
-        {/* head */}
-        <group ref={head}>
-          <RoundedBox args={[0.42, 0.32, 0.38]} radius={0.06} smoothness={4} position={[0, 0.03, 0]}>
+        {/* head — everything face-related is a child so it rotates together */}
+        <group ref={head} position={[0, 0.18, 0]}>
+          <RoundedBox args={[0.42, 0.32, 0.38]} radius={0.06} smoothness={4} position={[0, 0, 0]}>
             <meshStandardMaterial color="#26201b" metalness={0.5} roughness={0.35} />
           </RoundedBox>
-          <mesh position={[0, 0.3, 0.195]}>
+          {/* face panel */}
+          <mesh position={[0, 0.02, 0.195]}>
             <planeGeometry args={[0.34, 0.26]} />
             <meshStandardMaterial color="#12100e" roughness={0.3} metalness={0.2} />
           </mesh>
-          {/* eyes + sockets */}
-          
+          {/* eyes group (blink scales this) */}
+          <group ref={eyes} position={[0, 0, 0]}>
+            {/* eye sockets */}
             {[-0.1, 0.1].map((x) => (
-              <mesh key={x} position={[x, 0.33, 0.205]}>
+              <mesh key={x} position={[x, 0.06, 0.205]}>
                 <sphereGeometry args={[0.036, 16, 16]} />
                 <meshStandardMaterial color="#f2f0ea" roughness={0.25} />
               </mesh>
             ))}
+            {/* pupils */}
+            {[-0.1, 0.1].map((x, i) => (
+              <mesh key={"p" + x} ref={i === 0 ? leftPupil : rightPupil} position={[x, 0.06, 0.212]}>
+                <sphereGeometry args={[0.02, 12, 12]} />
+                <meshStandardMaterial color="#1b1713" roughness={0.3} />
+              </mesh>
+            ))}
           </group>
-          {[-0.1, 0.1].map((x, i) => (
-            <mesh key={"p" + x} ref={i === 0 ? leftPupil : rightPupil} position={[x, 0.33, 0.212]}>
-              <sphereGeometry args={[0.02, 12, 12]} />
-              <meshStandardMaterial color="#1b1713" roughness={0.3} />
-            </mesh>
-          ))}
           {/* eyebrows */}
-          <mesh ref={leftBrow} position={[-0.1, 0.4, 0.205]}>
+          <mesh ref={leftBrow} position={[-0.1, 0.13, 0.205]}>
             <boxGeometry args={[0.07, 0.016, 0.016]} />
             <meshStandardMaterial color="#4a4036" roughness={0.4} />
           </mesh>
-          <mesh ref={rightBrow} position={[0.1, 0.4, 0.205]}>
+          <mesh ref={rightBrow} position={[0.1, 0.13, 0.205]}>
             <boxGeometry args={[0.07, 0.016, 0.016]} />
             <meshStandardMaterial color="#4a4036" roughness={0.4} />
           </mesh>
           {/* mouth */}
-          <mesh ref={mouth} position={[0, 0.235, 0.195]}>
+          <mesh ref={mouth} position={[0, -0.04, 0.195]}>
             <planeGeometry args={[0.1, 0.014]} />
             <meshStandardMaterial color="#5a4a3c" roughness={0.4} />
           </mesh>
@@ -248,6 +263,7 @@ export function ChatBot({ mode }: { mode: BotMode }) {
       <ambientLight intensity={0.9} />
       <directionalLight position={[2, 3, 3]} intensity={1.6} color="#ffe8d0" />
       <directionalLight position={[-2, -1, 2]} intensity={0.5} color="#d97951" />
+      <PointerTracker />
       <Suspense fallback={null}>
         <Robot mode={mode} />
       </Suspense>
