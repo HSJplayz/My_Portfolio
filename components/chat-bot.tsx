@@ -51,12 +51,12 @@ function Robot({ mode }: { mode: BotMode }) {
     const speaking = mode === "speaking";
     const typing = mode === "typing";
 
-    const lookX = pointerX * 0.12;
-    const lookY = -pointerY * 0.08;
+    const lookX = pointerX * 0.06;
+    const lookY = -pointerY * 0.04;
 
-    const headYTarget = (typing ? -0.4 : thinking ? 0.42 : speaking ? Math.sin(t * 1.1) * 0.18 : Math.sin(t * 0.7) * 0.25) + lookX;
-    const headXTarget = (typing ? -0.24 : thinking ? 0.32 : speaking ? 0.05 + Math.sin(t * 2.1) * 0.04 : 0.03 + Math.sin(t * 0.5) * 0.02) + lookY;
-    const headZTarget = typing ? 0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.6) * 0.04 : Math.sin(t * 0.6) * 0.05;
+    const headYTarget = (typing ? -0.2 : thinking ? 0.2 : speaking ? Math.sin(t * 1.1) * 0.1 : Math.sin(t * 0.7) * 0.12) + lookX;
+    const headXTarget = (typing ? -0.12 : thinking ? 0.15 : speaking ? 0.03 + Math.sin(t * 2.1) * 0.02 : 0.02 + Math.sin(t * 0.5) * 0.01) + lookY;
+    const headZTarget = typing ? 0.04 : thinking ? 0.05 : speaking ? Math.sin(t * 1.6) * 0.02 : Math.sin(t * 0.6) * 0.03;
 
     const pupilXTarget = (typing ? -0.022 : thinking ? 0.02 : speaking ? Math.sin(t * 2.6) * 0.014 : Math.sin(t * 0.45) * 0.016) + lookX * 0.15;
     const pupilYTarget = (typing ? -0.016 : thinking ? 0.015 : 0) + lookY * 0.1;
@@ -144,28 +144,28 @@ function Robot({ mode }: { mode: BotMode }) {
   return (
     <Float speed={2} rotationIntensity={0.3} floatIntensity={0.4}>
       <group ref={bodySway} scale={1.45}>
-        {/* antenna */}
-        <mesh position={[0, 0.52, 0]}>
-          <cylinderGeometry args={[0.012, 0.012, 0.16, 8]} />
-          <meshStandardMaterial color="#3a322a" metalness={0.4} roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 0.62, 0]}>
-          <sphereGeometry args={[0.028, 12, 12]} />
-          <meshStandardMaterial ref={antennaMat} color="#ff9a5c" emissive="#ff9a5c" emissiveIntensity={1.6} />
-        </mesh>
-
-        {/* thinking dots */}
-        <group position={[0, 0.82, 0]}>
-          {[0, 1, 2].map((i) => (
-            <mesh key={i} ref={dots[i]} position={[(i - 1) * 0.095, 0, 0]}>
-              <sphereGeometry args={[0.042, 10, 10]} />
-              <meshBasicMaterial color="#d97951" />
-            </mesh>
-          ))}
-        </group>
-
         {/* head — everything face-related is a child so it rotates together */}
         <group ref={head} position={[0, 0.18, 0]}>
+          {/* antenna */}
+          <mesh position={[0, 0.34, 0]}>
+            <cylinderGeometry args={[0.012, 0.012, 0.16, 8]} />
+            <meshStandardMaterial color="#3a322a" metalness={0.4} roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0.44, 0]}>
+            <sphereGeometry args={[0.028, 12, 12]} />
+            <meshStandardMaterial ref={antennaMat} color="#ff9a5c" emissive="#ff9a5c" emissiveIntensity={1.6} />
+          </mesh>
+
+          {/* thinking dots */}
+          <group position={[0, 0.64, 0]}>
+            {[0, 1, 2].map((i) => (
+              <mesh key={i} ref={dots[i]} position={[(i - 1) * 0.095, 0, 0]}>
+                <sphereGeometry args={[0.042, 10, 10]} />
+                <meshBasicMaterial color="#d97951" />
+              </mesh>
+            ))}
+          </group>
+
           <RoundedBox args={[0.42, 0.32, 0.38]} radius={0.06} smoothness={4} position={[0, 0, 0]}>
             <meshStandardMaterial color="#26201b" metalness={0.5} roughness={0.35} />
           </RoundedBox>

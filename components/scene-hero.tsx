@@ -291,8 +291,8 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ tilt: 0, code: 0, glow: 0, flash: 0 });
-  const powered = useRef(true);
+  const anim = useRef<Anim>({ tilt: -0.5, code: 0, glow: 0, flash: 0 });
+  const powered = useRef(false);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
 
@@ -380,9 +380,10 @@ const apply = useCallback(() => {
 
   useEffect(() => {
     const startedAt = tweenId.current;
-    tweenTo({ tilt: 0 }, 1.5, () => {
+    tweenTo({ tilt: 0, code: 1, glow: 0.55 }, 1.5, () => {
       flashBurst(0.3, 0.7);
       resetTyping();
+      powered.current = true;
     });
     return () => {
       tweenId.current = startedAt + 1;
