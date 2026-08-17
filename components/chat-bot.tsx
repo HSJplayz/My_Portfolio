@@ -51,15 +51,15 @@ function Robot({ mode }: { mode: BotMode }) {
     const speaking = mode === "speaking";
     const typing = mode === "typing";
 
-    const lookX = pointerX * 0.06;
-    const lookY = -pointerY * 0.04;
+    const lookX = pointerX * 0.015;
+    const lookY = -pointerY * 0.01;
 
-    const headYTarget = (typing ? -0.2 : thinking ? 0.2 : speaking ? Math.sin(t * 1.1) * 0.1 : Math.sin(t * 0.7) * 0.12) + lookX;
-    const headXTarget = (typing ? -0.12 : thinking ? 0.15 : speaking ? 0.03 + Math.sin(t * 2.1) * 0.02 : 0.02 + Math.sin(t * 0.5) * 0.01) + lookY;
-    const headZTarget = typing ? 0.04 : thinking ? 0.05 : speaking ? Math.sin(t * 1.6) * 0.02 : Math.sin(t * 0.6) * 0.03;
+    const headYTarget = (typing ? -0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.1) * 0.06 : Math.sin(t * 0.7) * 0.08) + lookX;
+    const headXTarget = (typing ? -0.06 : thinking ? 0.08 : speaking ? 0.02 + Math.sin(t * 2.1) * 0.015 : 0.01 + Math.sin(t * 0.5) * 0.008) + lookY;
+    const headZTarget = typing ? 0.02 : thinking ? 0.025 : speaking ? Math.sin(t * 1.6) * 0.015 : Math.sin(t * 0.6) * 0.02;
 
-    const pupilXTarget = (typing ? -0.022 : thinking ? 0.02 : speaking ? Math.sin(t * 2.6) * 0.014 : Math.sin(t * 0.45) * 0.016) + lookX * 0.15;
-    const pupilYTarget = (typing ? -0.016 : thinking ? 0.015 : 0) + lookY * 0.1;
+    const pupilXTarget = (typing ? -0.018 : thinking ? 0.015 : speaking ? Math.sin(t * 2.6) * 0.012 : Math.sin(t * 0.45) * 0.014) + lookX * 0.8;
+    const pupilYTarget = (typing ? -0.012 : thinking ? 0.01 : 0) + lookY * 0.6;
 
     const browLTarget = typing ? 0.16 : thinking ? -0.3 : 0;
     const browRTarget = typing ? 0.16 : thinking ? 0.3 : 0;

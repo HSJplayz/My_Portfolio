@@ -291,15 +291,17 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ tilt: -0.5, code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ tilt: -1.0, code: 0, glow: 0, flash: 0 });
   const powered = useRef(false);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
 
+const BASE_TILT = 1.2;
+
 const apply = useCallback(() => {
     const a = anim.current;
     if (group.current) {
-      group.current.rotation.x = a.tilt;
+      group.current.rotation.x = BASE_TILT + a.tilt;
     }
     if (codeMat.current) {
       codeMat.current.opacity = a.code;
@@ -355,7 +357,7 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0, tilt: -0.35 }, 0.5, () => {
+    tweenTo({ code: 0, glow: 0, tilt: -1.0 }, 0.6, () => {
       transitioning.current = false;
       powered.current = false;
     });
