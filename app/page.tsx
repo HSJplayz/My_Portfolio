@@ -29,8 +29,8 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────── */}
-      <section className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+      <section className="relative flex min-h-[calc(100svh-4rem)] items-center">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-24 top-10 h-80 w-80 animate-drift rounded-full bg-coral/25 blur-3xl" />
           <div className="absolute right-[-10%] top-1/3 h-96 w-96 animate-drift rounded-full bg-violet/25 blur-3xl [animation-delay:-5s]" />
           <div className="absolute right-[-4%] bottom-16 h-72 w-72 animate-drift rounded-full bg-teal/20 blur-3xl [animation-delay:-11s]" />
@@ -68,11 +68,11 @@ export default function Home() {
               initial="hidden"
               animate="show"
               variants={heroVariants}
-              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[2.2] tracking-tight text-ink"
+              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[1.3] tracking-tight text-ink"
             >
               {profile.name.split(" ")[0]}
               <br />
-              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text py-px italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
                 {profile.name.split(" ").slice(1).join(" ")}
               </span>
             </motion.h1>
@@ -211,7 +211,7 @@ export default function Home() {
             <p className="mb-3 font-mono text-sm text-teal">( About )</p>
             <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
               Engineer. Builder.{" "}
-              <span className="bg-gradient-to-r from-teal via-lavender to-violet bg-clip-text py-px italic text-transparent">
+              <span className="bg-gradient-to-r from-teal via-lavender to-violet bg-clip-text italic text-transparent">
                 Roboticist.
               </span>
             </h2>
@@ -231,8 +231,8 @@ export default function Home() {
       </section>
 
       {/* ── Contact CTA ────────────────────────── */}
-      <section className="relative overflow-hidden border-t border-line">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
+      <section className="relative border-t border-line">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute left-1/4 top-0 h-72 w-72 animate-drift rounded-full bg-violet/25 blur-3xl" />
             <div className="absolute bottom-0 right-1/4 h-72 w-72 animate-drift rounded-full bg-teal/25 blur-3xl [animation-delay:-8s]" />
             <div className="absolute right-0 top-1/2 h-64 w-64 animate-drift rounded-full bg-rose/15 blur-3xl [animation-delay:-13s]" />
@@ -245,7 +245,7 @@ export default function Home() {
             <p className="mb-4 font-mono text-sm text-rose">( Contact )</p>
               <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold leading-tight tracking-tight text-ink sm:text-6xl">
               Have an idea?{" "}
-              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text py-px italic text-transparent">
+              <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
                 Let&apos;s build it.
               </span>
             </h2>
