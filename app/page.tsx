@@ -68,7 +68,7 @@ export default function Home() {
               initial="hidden"
               animate="show"
               variants={heroVariants}
-              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[1.45] tracking-tight text-ink"
+              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[2.2] tracking-tight text-ink"
             >
               {profile.name.split(" ")[0]}
               <br />
