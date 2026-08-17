@@ -50,8 +50,8 @@ function Robot({ mode }: { mode: BotMode }) {
     const speaking = mode === "speaking";
     const typing = mode === "typing";
 
-    const lookX = -pointerX * 0.015;
-    const lookY = -pointerY * 0.01;
+    const lookX = -pointerX * 0.08;
+    const lookY = -pointerY * 0.06;
 
     const headYTarget = (typing ? -0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.1) * 0.06 : Math.sin(t * 0.7) * 0.08) + lookX;
     const headXTarget = (typing ? -0.06 : thinking ? 0.08 : speaking ? 0.02 + Math.sin(t * 2.1) * 0.015 : 0.01 + Math.sin(t * 0.5) * 0.008) + lookY;
@@ -111,9 +111,9 @@ function Robot({ mode }: { mode: BotMode }) {
           : 1.6 + 0.4 * Math.sin(t * 2.2);
 
     if (head.current) {
-      head.current.rotation.x = damp(head.current.rotation.x, headXTarget, 0.08, dt);
-      head.current.rotation.y = damp(head.current.rotation.y, headYTarget, 0.08, dt);
-      head.current.rotation.z = damp(head.current.rotation.z, headZTarget, 0.08, dt);
+      head.current.rotation.x = damp(head.current.rotation.x, headXTarget, 0.15, dt);
+      head.current.rotation.y = damp(head.current.rotation.y, headYTarget, 0.15, dt);
+      head.current.rotation.z = damp(head.current.rotation.z, headZTarget, 0.15, dt);
     }
     if (bodySway.current) bodySway.current.rotation.z = damp(bodySway.current.rotation.z, swayTarget, 0.06, dt);
     if (leftArm.current) leftArm.current.rotation.x = damp(leftArm.current.rotation.x, armLTarget, 0.1, dt);

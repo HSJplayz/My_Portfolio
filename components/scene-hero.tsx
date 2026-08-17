@@ -234,7 +234,7 @@ function useCodeScreen() {
   return { texture, reset };
 }
 
-type Anim = { code: number; glow: number; flash: number };
+type Anim = { code: number; glow: number; flash: number; rotY: number };
 
 function Laptop() {
   const group = useRef<THREE.Group>(null);
@@ -291,13 +291,16 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ code: 0, glow: 0, flash: 0, rotY: 0 });
   const powered = useRef(false);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
 
 const apply = useCallback(() => {
     const a = anim.current;
+    if (group.current) {
+      group.current.rotation.y = a.rotY;
+    }
     if (codeMat.current) {
       codeMat.current.opacity = a.code;
       const wantOpaque = a.code >= 0.999;
@@ -352,9 +355,11 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0 }, 0.5, () => {
-      transitioning.current = false;
-      powered.current = false;
+    tweenTo({ code: 0, glow: 0, rotY: -0.15 }, 0.4, () => {
+      tweenTo({ rotY: 0 }, 0.3, () => {
+        transitioning.current = false;
+        powered.current = false;
+      });
     });
   }, [flashBurst, tweenTo]);
 
@@ -362,10 +367,12 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     resetTyping();
-    tweenTo({ code: 1, glow: 0.55 }, 0.6, () => {
+    tweenTo({ code: 1, glow: 0.55, rotY: 0.15 }, 0.4, () => {
       flashBurst(0.3, 0.7);
-      transitioning.current = false;
-      powered.current = true;
+      tweenTo({ rotY: 0 }, 0.3, () => {
+        transitioning.current = false;
+        powered.current = true;
+      });
     });
   }, [flashBurst, resetTyping, tweenTo]);
 
@@ -377,10 +384,12 @@ const apply = useCallback(() => {
 
   useEffect(() => {
     const startedAt = tweenId.current;
-    tweenTo({ code: 1, glow: 0.55 }, 1.5, () => {
+    tweenTo({ code: 1, glow: 0.55, rotY: 0.12 }, 1.2, () => {
       flashBurst(0.3, 0.7);
-      resetTyping();
-      powered.current = true;
+      tweenTo({ rotY: 0 }, 0.4, () => {
+        resetTyping();
+        powered.current = true;
+      });
     });
     return () => {
       tweenId.current = startedAt + 1;
@@ -419,7 +428,7 @@ const apply = useCallback(() => {
 
   return (
     <group rotation={[0.04, -0.85, 0]} position={[0.6, -0.15, 0]}>
-      <group ref={group} rotation={[1.2, 0, 0]}>
+      <group ref={group} rotation={[0.35, 0, 0]}>
         <primitive
           object={model}
           onClick={(e: { stopPropagation: () => void }) => {
