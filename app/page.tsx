@@ -68,7 +68,7 @@ export default function Home() {
               initial="hidden"
               animate="show"
               variants={heroVariants}
-              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[1.15] tracking-tight text-ink"
+              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[1.45] tracking-tight text-ink"
             >
               {profile.name.split(" ")[0]}
               <br />
@@ -114,7 +114,7 @@ export default function Home() {
             initial={{ x: 40 }}
             animate={{ x: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-            className="justify-self-center"
+            className="justify-self-center mr-16"
           >
             <Parallax offset={20}>
               <PhotoStack />

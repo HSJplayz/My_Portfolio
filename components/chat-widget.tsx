@@ -14,7 +14,12 @@ const ChatBot = dynamic(() => import("@/components/chat-bot").then((m) => m.Chat
 const CHAT_API = process.env.NEXT_PUBLIC_CHAT_API || "/api/chat";
 
 function stripThinking(text: string): string {
-  return text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+  let result = text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+  const openIdx = result.lastIndexOf("<think>");
+  if (openIdx !== -1) {
+    result = result.substring(0, openIdx).trim();
+  }
+  return result;
 }
 
 const GREETING = {
