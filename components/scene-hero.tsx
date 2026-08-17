@@ -234,7 +234,7 @@ function useCodeScreen() {
   return { texture, reset };
 }
 
-type Anim = { tilt: number; code: number; glow: number; flash: number };
+type Anim = { code: number; glow: number; flash: number };
 
 function Laptop() {
   const group = useRef<THREE.Group>(null);
@@ -291,18 +291,13 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ tilt: 0.6, code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ code: 0, glow: 0, flash: 0 });
   const powered = useRef(false);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
 
-const BASE_TILT = 1.2;
-
 const apply = useCallback(() => {
     const a = anim.current;
-    if (group.current) {
-      group.current.rotation.x = BASE_TILT + a.tilt;
-    }
     if (codeMat.current) {
       codeMat.current.opacity = a.code;
       const wantOpaque = a.code >= 0.999;
@@ -357,7 +352,7 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0, tilt: 0.6 }, 0.6, () => {
+    tweenTo({ code: 0, glow: 0 }, 0.5, () => {
       transitioning.current = false;
       powered.current = false;
     });
@@ -367,7 +362,7 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     resetTyping();
-    tweenTo({ tilt: 0, code: 1, glow: 0.55 }, 0.6, () => {
+    tweenTo({ code: 1, glow: 0.55 }, 0.6, () => {
       flashBurst(0.3, 0.7);
       transitioning.current = false;
       powered.current = true;
@@ -382,7 +377,7 @@ const apply = useCallback(() => {
 
   useEffect(() => {
     const startedAt = tweenId.current;
-    tweenTo({ tilt: 0, code: 1, glow: 0.55 }, 1.5, () => {
+    tweenTo({ code: 1, glow: 0.55 }, 1.5, () => {
       flashBurst(0.3, 0.7);
       resetTyping();
       powered.current = true;

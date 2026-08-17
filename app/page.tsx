@@ -68,7 +68,7 @@ export default function Home() {
               initial="hidden"
               animate="show"
               variants={heroVariants}
-              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[0.95] tracking-tight text-ink"
+              className="font-display text-[clamp(3rem,9vw,6rem)] font-semibold leading-[1.05] tracking-tight text-ink"
             >
               {profile.name.split(" ")[0]}
               <br />
@@ -243,7 +243,7 @@ export default function Home() {
         <div className="relative mx-auto max-w-5xl px-5 py-28 text-center">
           <Reveal>
             <p className="mb-4 font-mono text-sm text-rose">( Contact )</p>
-            <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
+              <h2 className="mx-auto max-w-2xl font-display text-5xl font-semibold leading-tight tracking-tight text-ink sm:text-6xl">
               Have an idea?{" "}
               <span className="bg-gradient-to-r from-coral via-rose to-violet bg-clip-text italic text-transparent">
                 Let&apos;s build it.

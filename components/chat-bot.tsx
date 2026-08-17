@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, RoundedBox } from "@react-three/drei";
 import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
@@ -14,15 +14,14 @@ let pointerX = 0;
 let pointerY = 0;
 
 function PointerTracker() {
-  const { size } = useThree();
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      pointerX = (e.clientX / size.width - 0.5) * 2;
-      pointerY = (e.clientY / size.height - 0.5) * 2;
+      pointerX = (e.clientX / window.innerWidth - 0.5) * 2;
+      pointerY = (e.clientY / window.innerHeight - 0.5) * 2;
     };
     window.addEventListener("pointermove", onMove);
     return () => window.removeEventListener("pointermove", onMove);
-  }, [size]);
+  }, []);
   return null;
 }
 
@@ -52,7 +51,7 @@ function Robot({ mode }: { mode: BotMode }) {
     const typing = mode === "typing";
 
     const lookX = -pointerX * 0.015;
-    const lookY = pointerY * 0.01;
+    const lookY = -pointerY * 0.01;
 
     const headYTarget = (typing ? -0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.1) * 0.06 : Math.sin(t * 0.7) * 0.08) + lookX;
     const headXTarget = (typing ? -0.06 : thinking ? 0.08 : speaking ? 0.02 + Math.sin(t * 2.1) * 0.015 : 0.01 + Math.sin(t * 0.5) * 0.008) + lookY;
