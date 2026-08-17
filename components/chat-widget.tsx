@@ -13,6 +13,10 @@ const ChatBot = dynamic(() => import("@/components/chat-bot").then((m) => m.Chat
 
 const CHAT_API = process.env.NEXT_PUBLIC_CHAT_API || "/api/chat";
 
+function stripThinking(text: string): string {
+  return text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+}
+
 const GREETING = {
   id: "greeting",
   role: "assistant" as const,
@@ -93,10 +97,12 @@ export function ChatWidget() {
 
             <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
               {allMessages.map((m) => {
-                const text = m.parts
-                  .filter((p) => p.type === "text")
-                  .map((p) => (p.type === "text" ? p.text : ""))
-                  .join("");
+                const text = stripThinking(
+                  m.parts
+                    .filter((p) => p.type === "text")
+                    .map((p) => (p.type === "text" ? p.text : ""))
+                    .join("")
+                );
                 const isUser = m.role === "user";
                 return (
                   <div

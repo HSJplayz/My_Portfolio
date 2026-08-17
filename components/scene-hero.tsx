@@ -291,7 +291,7 @@ function Laptop() {
 
   const { texture: codeTexture, reset: resetTyping } = useCodeScreen();
 
-  const anim = useRef<Anim>({ tilt: -1.0, code: 0, glow: 0, flash: 0 });
+  const anim = useRef<Anim>({ tilt: 0.6, code: 0, glow: 0, flash: 0 });
   const powered = useRef(false);
   const transitioning = useRef(false);
   const tweenId = useRef(0);
@@ -357,7 +357,7 @@ const apply = useCallback(() => {
     if (transitioning.current) return;
     transitioning.current = true;
     flashBurst(0.3, 0.85);
-    tweenTo({ code: 0, glow: 0, tilt: -1.0 }, 0.6, () => {
+    tweenTo({ code: 0, glow: 0, tilt: 0.6 }, 0.6, () => {
       transitioning.current = false;
       powered.current = false;
     });
@@ -390,7 +390,7 @@ const apply = useCallback(() => {
     return () => {
       tweenId.current = startedAt + 1;
     };
-  }, [flashBurst, tweenTo, resetTyping]);
+  }, []);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? "pointer" : "auto";

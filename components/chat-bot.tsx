@@ -51,8 +51,8 @@ function Robot({ mode }: { mode: BotMode }) {
     const speaking = mode === "speaking";
     const typing = mode === "typing";
 
-    const lookX = pointerX * 0.015;
-    const lookY = -pointerY * 0.01;
+    const lookX = -pointerX * 0.015;
+    const lookY = pointerY * 0.01;
 
     const headYTarget = (typing ? -0.08 : thinking ? 0.1 : speaking ? Math.sin(t * 1.1) * 0.06 : Math.sin(t * 0.7) * 0.08) + lookX;
     const headXTarget = (typing ? -0.06 : thinking ? 0.08 : speaking ? 0.02 + Math.sin(t * 2.1) * 0.015 : 0.01 + Math.sin(t * 0.5) * 0.008) + lookY;
